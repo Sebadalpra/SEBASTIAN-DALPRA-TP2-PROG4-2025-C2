@@ -1,0 +1,93 @@
+<div class="session">
+
+    <form action="" class="log-in" [formGroup]="grupoRegistro" >
+
+        <h4>Registro <span>Red Social</span></h4>
+        <p>Bienvenido! Regístrate para acceder a tu cuenta y disfrutar de nuestros juegos.</p>
+        <div class="floating-label">
+            <div>
+                <input class="me-5" placeholder="Nombre" type="text" formControlName="nombre" name="nombre" id="nombre">
+                <!-- Validaciones nombre -->
+                @if (nombre?.errors?.["required"] != null && nombre?.touched) {
+                        <small class="error">El nombre es requerido.</small>
+                    }
+                @if (nombre?.errors?.["minlength"]) {
+                    <small class="error">El nombre debe tener al menos 3 caracteres.</small>
+                }
+                @if (nombre?.errors?.["pattern"]) {
+                    <small class="error">El nombre solo puede contener letras y espacios.</small>
+                }
+            </div>
+
+            <div>
+            <input placeholder="Apellido" type="text" formControlName="apellido" name="apellido" id="apellido" >
+                <!-- Validaciones apellido -->
+                @if (apellido?.errors?.["required"] != null && apellido?.touched) {
+                        <small class="error">El apellido es requerido.</small>
+                    }
+                    @if (apellido?.errors?.["minlength"]) {
+                        <small class="error">El apellido debe tener al menos 3 caracteres.</small>
+                }
+                @if (apellido?.errors?.["pattern"]) {
+                    <small class="error">El apellido solo puede contener letras y espacios.</small>
+                }
+            </div>
+
+        </div>
+
+        <div class="floating-label">
+            <div>
+                <input class="me-5" placeholder="Email" type="email" formControlName="email" name="email" id="email" >
+                <!-- Validaciones email -->
+                @if(email?.errors?.["required"] != null && email?.touched) {
+                        <small class="error">El email es requerido.</small>
+                    }
+                    @if (email?.errors?.["email"]) {
+                        <small class="error">El email no es válido.</small>
+                }
+                    <!-- si email ya existe -->
+                    @if (email?.errors?.["emailExiste"]) {
+                        <small class="error">El email ya está registrado.</small>
+                    }
+            </div>
+
+            <div>
+                <input type="number" placeholder="Edad" formControlName="edad" name="edad" id="edad">
+                <!-- Validaciones edad -->
+                @if (edad?.errors?.["required"] != null && edad?.touched) {
+                        <small class="error">La edad es requerida.</small>
+                    }
+                    @if (edad?.errors?.["min"]) {
+                        <small class="error">Debes ser mayor de 18 años para registrarte.</small>
+                }
+            </div>
+        </div>
+
+        <div class="floating-label">
+            <div>
+                <input class="me-5" placeholder="Password" type="password" formControlName="password" name="password" id="password" >
+                <!-- Validaciones password -->
+                @if(password?.errors?.["required"] != null && password?.touched) {
+                        <small class="error">La contraseña es requerida.</small>
+                    }
+                    @if (password?.errors?.["minlength"]) {
+                        <small class="error">La contraseña debe tener al menos 6 caracteres.</small>
+                }
+            </div>
+
+            <div>
+                <input placeholder="Confirm Password" type="password" formControlName="confirmPassword" name="confirmPassword" id="confirmPassword">
+                <!-- Validaciones confirm password -->
+                @if (confirmPassword?.errors?.["required"] != null && confirmPassword?.touched) {
+                        <small class="error">La confirmación de la contraseña es requerida.</small>
+                    }
+                    @if (confirmPassword?.errors?.["minlength"]) {
+                        <small class="error">La confirmación de la contraseña debe tener al menos 6 caracteres.</small>
+                }
+            </div>
+        </div>
+
+        <button class= "mt-5 btn-secondary" type="submit" >Continuar</button>
+        <a routerLink="/login" class="discrete">Volver al login</a>
+    </form>
+</div>
