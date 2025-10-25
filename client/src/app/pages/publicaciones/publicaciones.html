@@ -1,6 +1,6 @@
 <p>publicaciones works!</p>
 
-<form action="" [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()">
+<form action="" [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()" (keyup.enter)="crearPublicacion()">
     <input type="text" placeholder="Titulo" formControlName="titulo" />
     <input type="text" placeholder="Mensaje" formControlName="mensaje" />
     // agregar imagen

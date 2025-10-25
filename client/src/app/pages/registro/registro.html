@@ -2,8 +2,8 @@
 
     <form action="" class="log-in" [formGroup]="grupoRegistro" >
 
-        <h4>Registro <span>Red Social</span></h4>
-        <p>Bienvenido! Regístrate para acceder a tu cuenta y disfrutar de nuestros juegos.</p>
+        <h4>Registro</h4>
+        <p>Bienvenido! Registrate para acceder a nuestra Red Social y contactar a tus amigos.</p>
         <div class="floating-label">
             <div>
                 <input class="me-5" placeholder="Nombre" type="text" formControlName="nombre" name="nombre" id="nombre">
@@ -51,16 +51,14 @@
                     }
             </div>
 
-            <div>
-                <input type="number" placeholder="Edad" formControlName="edad" name="edad" id="edad">
-                <!-- Validaciones edad -->
-                @if (edad?.errors?.["required"] != null && edad?.touched) {
-                        <small class="error">La edad es requerida.</small>
+            <div >
+                <input type="date" placeholder="Fecha de Nacimiento" formControlName="fechaNacimiento" name="fechaNacimiento" id="fechaNacimiento">
+                <!-- Validaciones fecha de nacimiento -->
+                @if (fechaNac?.errors?.["required"] != null && fechaNac?.touched) {
+                        <small class="error">La fecha de nacimiento es requerida.</small>
                     }
-                    @if (edad?.errors?.["min"]) {
-                        <small class="error">Debes ser mayor de 18 años para registrarte.</small>
-                }
             </div>
+
         </div>
 
         <div class="floating-label">
@@ -87,7 +85,20 @@
             </div>
         </div>
 
-        <button class= "mt-5 btn-secondary" type="submit" >Continuar</button>
+
+        <div class="floating-label">
+            <input type="text" placeholder="Descripción breve" formControlName="descripcion" name="descripcion" id="descripcion">
+            <!-- Validaciones descripcion -->
+             @if (descripcion?.errors?.["maxlength"]) {
+                    <small class="error">La descripción no puede exceder los 200 caracteres.</small>
+                }
+        </div>
+
+        <div class="floating-label">
+            <input type="file" name="fotoPerfil" id="fotoPerfil">
+        </div>
+        
+        <button class="btn btn-secondary mt-5" type="submit">Continuar</button>
         <a routerLink="/login" class="discrete">Volver al login</a>
     </form>
 </div>

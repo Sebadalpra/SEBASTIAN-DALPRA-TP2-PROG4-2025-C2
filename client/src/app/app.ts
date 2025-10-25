@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, Inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLinkWithHref, RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,11 @@ import { RouterOutlet, RouterLinkWithHref, RouterLink } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('client');
+
+
+  
+  
+
+
+
 }

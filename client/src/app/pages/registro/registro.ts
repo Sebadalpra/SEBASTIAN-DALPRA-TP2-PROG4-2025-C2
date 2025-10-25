@@ -20,6 +20,7 @@ export class Registro {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
     fechaNacimiento: new FormControl('', [Validators.required]),
+    descripcion: new FormControl([Validators.required, Validators.maxLength(200)])
   },
   {validators: [this.validarPasswords]} // validador de grupo ya que uso 2 campos y evito acceder al control.parents
 )
@@ -41,6 +42,12 @@ export class Registro {
   }
   get confirmPassword() {
     return this.grupoRegistro.get("confirmPassword")
+  }
+  get fechaNac() {
+    return this.grupoRegistro.get("fechaNacimiento")
+  }
+  get descripcion(){
+    return this.grupoRegistro.get("descripcion")
   }
 
   validarPasswords(control: AbstractControl) : ValidationErrors | null {

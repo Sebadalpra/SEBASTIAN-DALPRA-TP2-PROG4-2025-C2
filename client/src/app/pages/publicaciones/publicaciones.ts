@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-publicaciones',
@@ -14,22 +15,13 @@ export class Publicaciones {
     mensaje: new FormControl('', [Validators.required]),
   });
 
-  async crearPublicacion() {
+  private apiService = inject(Api)
+
+  crearPublicacion() {
     const titulo = this.publicacionesGroup.get("titulo")?.value;
-    const mensaje = this.publicacionesGroup.get("mensaje")?.value;
-    
+    const mensaje = this.publicacionesGroup.get("mensaje")?.value;    
     const nuevaPublicacion = { titulo, mensaje };
 
-    console.log("Publicacion creada:", nuevaPublicacion);
-
-    const response = await fetch('http://localhost:3000/publicaciones', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(nuevaPublicacion),
-    });
-    const data = await response.json();
-    console.log('Respuesta del servidor:', data);
+    this.apiService.postData('publicaciones', nuevaPublicacion);
 
   }}
