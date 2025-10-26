@@ -8,8 +8,9 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.create(createUsuarioDto);
+  // si se ejecuta un post a /usuarios se consume el dto de usuario y se llama al servicio para crearlo
+  crearUsuario(@Body() dtoUsuario: CreateUsuarioDto) {
+    return this.usuariosService.create(dtoUsuario);
   }
 
   @Get()

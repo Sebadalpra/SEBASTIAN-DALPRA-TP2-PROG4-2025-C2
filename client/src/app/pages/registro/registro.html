@@ -1,6 +1,6 @@
 <div class="session">
 
-    <form action="" class="log-in" [formGroup]="grupoRegistro" >
+    <form action="" class="log-in" [formGroup]="grupoRegistro" (ngSubmit)="enviarRegistro()" >
 
         <h4>Registro</h4>
         <p>Bienvenido! Registrate para acceder a nuestra Red Social y contactar a tus amigos.</p>

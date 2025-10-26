@@ -1,11 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Usuario } from './entities/usuario.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsuariosService {
-  create(createUsuarioDto: CreateUsuarioDto) {
-    return 'This action adds a new usuario';
+
+  /* Inyección del modelo de Mongoose para la entidad Usuario */
+  constructor(@InjectModel(Usuario.name) private usuarioModel : Model<Usuario> ){}
+
+  create(dtoUsuario: CreateUsuarioDto) {
+    const usuario = new this.usuarioModel({
+      ...dtoUsuario,
+      fecha_nacimiento: new Date(dtoUsuario.fecha_nacimiento)
+    })
+
+
+    const guardar = usuario.save();
+    return guardar;
   }
 
   findAll() {

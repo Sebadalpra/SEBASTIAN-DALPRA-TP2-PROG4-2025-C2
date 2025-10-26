@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
 import { min } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-registro',
@@ -61,4 +62,11 @@ export class Registro {
   }
 
   // hacer logica para validar si es mayor de edad
+
+  private apiService = inject(Api)
+  
+  enviarRegistro(){
+    // tiene que ir la logica para enviar el form si es correcto a la api
+    this.apiService.postData('usuarios', this.grupoRegistro)
+  }
 }
