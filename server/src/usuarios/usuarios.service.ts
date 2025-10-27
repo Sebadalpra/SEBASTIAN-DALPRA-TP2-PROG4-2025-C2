@@ -12,13 +12,12 @@ export class UsuariosService {
   constructor(@InjectModel(Usuario.name) private usuarioModel : Model<Usuario> ){}
 
   create(dtoUsuario: CreateUsuarioDto) {
-    const usuario = new this.usuarioModel({
-      ...dtoUsuario,
-      fecha_nacimiento: new Date(dtoUsuario.fecha_nacimiento)
-    })
-
+    const usuario = new this.usuarioModel(dtoUsuario);
 
     const guardar = usuario.save();
+    guardar.then((doc) => {
+      console.log('Usuario creado:', doc);
+    });
     return guardar;
   }
 

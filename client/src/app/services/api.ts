@@ -1,22 +1,16 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Api {
 
-  async postData(endpoint: string, data: any) {
-    const resp = await fetch(`http://localhost:3000/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }
-  )
-  console.log(`Enviado a '${endpoint}'`)
-  return resp
- }
+  constructor(private http: HttpClient) { }
+
+  postData(endpoint: string, data: any) {
+    return this.http.post(`http://localhost:3000/${endpoint}`, data);
+  }
 
 }
 

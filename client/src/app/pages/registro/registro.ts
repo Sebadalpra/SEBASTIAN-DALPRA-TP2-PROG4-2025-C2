@@ -26,6 +26,16 @@ export class Registro {
   {validators: [this.validarPasswords]} // validador de grupo ya que uso 2 campos y evito acceder al control.parents
 )
 
+  validarPasswords(control: AbstractControl) : ValidationErrors | null {
+    const password = control.get("password")?.value
+    const confirmPassword = control.get("confirmPassword")?.value
+
+    if (password != confirmPassword) {
+      return {iguales: false}
+    }
+    return null
+  }
+
   get nombre() {
     return this.grupoRegistro.get("nombre")
   }
@@ -50,23 +60,42 @@ export class Registro {
   get descripcion(){
     return this.grupoRegistro.get("descripcion")
   }
-
-  validarPasswords(control: AbstractControl) : ValidationErrors | null {
-    const password = control.get("password")?.value
-    const confirmPassword = control.get("confirmPassword")?.value
-
-    if (password != confirmPassword) {
-      return {iguales: false}
-    }
-    return null
+  get userName() {
+    return this.grupoRegistro.get("userName")
   }
+
 
   // hacer logica para validar si es mayor de edad
 
   private apiService = inject(Api)
   
   enviarRegistro(){
-    // tiene que ir la logica para enviar el form si es correcto a la api
-    this.apiService.postData('usuarios', this.grupoRegistro)
+    // definir los mismos campos que el dto del back
+    const usuario = {
+      nombre: this.nombre?.value,
+      apellido: this.apellido?.value,
+      email: this.email?.value,
+      username: this.userName?.value,
+      password: this.password?.value,
+      fecha_nacimiento: this.fechaNac?.value,
+      descripcion: this.descripcion?.value
+    }
+
+    this.apiService.postData('usuarios', usuario).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Tu cuenta ha sido creada correctamente.',
+        });
+      }
+      ,error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el registro',
+          text: error.error.message,
+        });
+      }
+    });
   }
 }

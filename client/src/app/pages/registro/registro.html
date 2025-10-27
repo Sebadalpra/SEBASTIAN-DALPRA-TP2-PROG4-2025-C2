@@ -85,6 +85,19 @@
             </div>
         </div>
 
+        <div class="floating-label">
+            <input type="text" placeholder="Nombre de Usuario" formControlName="userName" name="userName" id="userName">
+            <!-- Validaciones username -->
+            @if (userName?.errors?.["required"] != null && userName?.touched) {
+                    <small class="error">El nombre de usuario es requerido.</small>
+                }
+                @if (userName?.errors?.["minlength"]) {
+                    <small class="error">El nombre de usuario debe tener al menos 3 caracteres.</small>
+                }
+                @if (userName?.errors?.["pattern"]) {
+                    <small class="error">El nombre de usuario solo puede contener letras y números.</small>
+                }
+        </div>
 
         <div class="floating-label">
             <input type="text" placeholder="Descripción breve" formControlName="descripcion" name="descripcion" id="descripcion">
