@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -6,10 +6,13 @@ import { HttpClient } from '@angular/common/http';
 })
 export class Api {
 
-  constructor(private http: HttpClient) { }
+  http = inject(HttpClient);
+
+  local = 'http://localhost:3000';
+  render = 'https://sebastian-dalpra-tp2-prog4-2025-c2-1.onrender.com';
 
   postData(endpoint: string, data: any) {
-    return this.http.post(`http://localhost:3000/${endpoint}`, data);
+    return this.http.post(`${this.render}/${endpoint}`, data);
   }
 
 }
