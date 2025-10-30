@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
-import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators, FormsModule } from '@angular/forms';
 import { min } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Api } from '../../services/api';
 
 @Component({
   selector: 'app-registro',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, FormsModule],
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })
@@ -66,8 +66,25 @@ export class Registro {
 
 
   // hacer logica para validar si es mayor de edad
-
   private apiService = inject(Api)
+
+  file? = File
+
+  seleccionarArchivo( archivo: any ){
+    console.log("Archivo seleccionado: " + archivo);
+    this.file = archivo.target.files[0];
+
+    this.apiService.postData('upload', this.file).subscribe({
+      next: (data) => {
+        console.log("Archivo subido correctamente", data);
+      },
+      error: (error) => {
+        console.error("Error al subir el archivo", error);
+      }
+    });
+  }
+
+
   
   enviarRegistro(){
     // definir los mismos campos que el dto del back
@@ -81,7 +98,7 @@ export class Registro {
       descripcion: this.descripcion?.value
     }
 
-    this.apiService.postData('usuarios', usuario).subscribe({
+    this.apiService.postData('auth/registro', usuario).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',
