@@ -13,13 +13,14 @@ export class PublicacionesController {
   @UseInterceptors(FileInterceptor('imagen', {
     storage: diskStorage({
       destination: './public/images',
-      // guardado basico:
+      // guardado:
       filename: (req, file, cb) => {
         const nombreArchivo = Date.now() + '-' + file.originalname;
         cb(null, nombreArchivo);
       }
     })
   }))
+  // con formdata los campos de @body no funcionan como todo un objeto, por eso van uno por uno
   create(@Body('titulo') titulo: string, @Body('mensaje') mensaje: string, @UploadedFile() file: Express.Multer.File) {
     const publicacionConImagen = {
       titulo,
