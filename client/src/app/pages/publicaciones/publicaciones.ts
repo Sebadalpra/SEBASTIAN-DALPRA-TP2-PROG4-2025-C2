@@ -13,15 +13,52 @@ export class Publicaciones {
   publicacionesGroup = new FormGroup({
     titulo: new FormControl('', [Validators.required, Validators.minLength(3)]),
     mensaje: new FormControl('', [Validators.required]),
+    imagen: new FormControl('', [Validators.required])
   });
 
   private apiService = inject(Api)
 
+  file: File | null = null;
+
+  seleccionarArchivo( archivo: any ){
+      const file_seleccionado = archivo.target.files[0];
+
+      console.log("archivo seleccionado: " + file_seleccionado.name);
+      this.file = file_seleccionado;
+  }
+
   crearPublicacion() {
-    const titulo = this.publicacionesGroup.get("titulo")?.value;
-    const mensaje = this.publicacionesGroup.get("mensaje")?.value;    
-    const nuevaPublicacion = { titulo, mensaje };
+    if (!this.publicacionesGroup.valid || !this.file) {
+      console.error('Formulario inválido o no hay archivo seleccionado');
+      return;
+    }
 
-    this.apiService.postData('publicaciones', nuevaPublicacion);
+    // Crear FormData con todos los campos
+    const formData = new FormData();
+    formData.append('titulo', this.publicacionesGroup.get("titulo")?.value || '');
+    formData.append('mensaje', this.publicacionesGroup.get("mensaje")?.value || '');
+    formData.append('imagen', this.file);
 
-  }}
+    this.apiService.postData('publicaciones', formData).subscribe({
+      next: (res) => {
+        console.log('publicación creada exitosamente:', res);
+        this.publicacionesGroup.reset();
+        this.file = null;
+      },
+      error: (error) => {
+        console.error('error al crear publicación:', error);
+      }
+    });
+
+  }
+
+
+
+
+
+
+}
+
+
+    
+    

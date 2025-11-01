@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
 import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
@@ -8,8 +10,23 @@ export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
 
   @Post()
-  create(@Body() dtoCrearPublicaciones: CreatePublicacionesDto) {
-    return this.publicacionesService.create(dtoCrearPublicaciones);
+  @UseInterceptors(FileInterceptor('imagen', {
+    storage: diskStorage({
+      destination: './public/images',
+      // guardado basico:
+      filename: (req, file, cb) => {
+        const nombreArchivo = Date.now() + '-' + file.originalname;
+        cb(null, nombreArchivo);
+      }
+    })
+  }))
+  create(@Body('titulo') titulo: string, @Body('mensaje') mensaje: string, @UploadedFile() file: Express.Multer.File) {
+    const publicacionConImagen = {
+      titulo,
+      mensaje,
+      imagen: file ? file.filename : ''
+    };
+    return this.publicacionesService.create(publicacionConImagen);
   }
 
   @Get()

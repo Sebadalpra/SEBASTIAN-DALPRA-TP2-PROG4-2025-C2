@@ -3,6 +3,11 @@
 <form action="" [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()" (keyup.enter)="crearPublicacion()">
     <input type="text" placeholder="Titulo" formControlName="titulo" />
     <input type="text" placeholder="Mensaje" formControlName="mensaje" />
-    // agregar imagen
+
+    
+        <div class="floating-label">
+            <input type="file" (change)="seleccionarArchivo($event) " formControlName="imagen" />
+        </div>
+
     <button type="submit">Crear Publicación</button>
 </form>

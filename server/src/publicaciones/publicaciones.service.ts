@@ -3,23 +3,22 @@ import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Publicaciones } from './entities/publicacione.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class PublicacionesService {
 
-  private publicaciones: any [] = []
+  // model me trae los metodos para interactuar con la coleccion de publicaciones
+  constructor(@InjectModel('Publicaciones') private publicacionesModel : Model<Publicaciones> ){}
 
-  create(dtoPublicacion: CreatePublicacionesDto) {
-    const newPublicacion = {
-      ...dtoPublicacion
-    };
-    this.publicaciones.push(newPublicacion);
-    console.log(this.publicaciones);
-    return newPublicacion;
+  create(nuevaPubli: CreatePublicacionesDto) {
+    const nuevaPublicacion = new this.publicacionesModel(nuevaPubli);
+    return nuevaPublicacion.save();
   }
 
   findAll() {
-    return `This action returns all publicaciones`;
+    console.log("Buscando todas las publicaciones")
+    return this.publicacionesModel.find().exec();
   }
 
   findOne(id: number) {

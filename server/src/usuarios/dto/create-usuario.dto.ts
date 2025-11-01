@@ -23,4 +23,6 @@ export class CreateUsuarioDto {
     @IsOptional()
     @IsString()
     descripcion?: string;
+
+
 }

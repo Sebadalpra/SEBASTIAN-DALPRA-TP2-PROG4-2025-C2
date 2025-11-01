@@ -100,7 +100,7 @@
         </div>
 
         <div class="floating-label">
-            <input type="text" placeholder="Descripción breve" formControlName="descripcion" name="descripcion" id="descripcion">
+            <input type="text" placeholder="Descripción breve" formControlName="descripcion" >
             <!-- Validaciones descripcion -->
              @if (descripcion?.errors?.["maxlength"]) {
                     <small class="error">La descripción no puede exceder los 200 caracteres.</small>

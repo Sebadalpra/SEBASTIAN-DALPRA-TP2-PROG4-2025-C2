@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 export class UsuariosService {
 
   /* Inyección del modelo de Mongoose para la entidad Usuario */
-  constructor(@InjectModel(Usuario.name) private usuarioModel : Model<Usuario> ){}
+  constructor(@InjectModel('Usuario') private usuarioModel : Model<Usuario> ){}
 
   create(dtoUsuario: CreateUsuarioDto) {
     const usuario = new this.usuarioModel(dtoUsuario);

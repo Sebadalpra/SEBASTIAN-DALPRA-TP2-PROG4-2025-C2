@@ -5,6 +5,10 @@ export const routes: Routes = [
         path: '', redirectTo: 'publicaciones', pathMatch: 'full'
     },
     {
+        path: 'perfil',
+        loadComponent: () => import('./pages/mi-perfil/mi-perfil').then(m => m.MiPerfil)
+    },
+    {
         path: 'publicaciones',
         loadComponent: () => import('./pages/publicaciones/publicaciones').then(m => m.Publicaciones)
     },

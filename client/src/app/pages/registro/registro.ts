@@ -21,9 +21,9 @@ export class Registro {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
     fechaNacimiento: new FormControl('', [Validators.required]),
-    descripcion: new FormControl([Validators.required, Validators.maxLength(200)])
+    descripcion: new FormControl('', [Validators.required, Validators.maxLength(200)])
   },
-  {validators: [this.validarPasswords]} // validador de grupo ya que uso 2 campos y evito acceder al control.parents
+  {validators: [this.validarPasswords]}
 )
 
   validarPasswords(control: AbstractControl) : ValidationErrors | null {
@@ -68,15 +68,18 @@ export class Registro {
   // hacer logica para validar si es mayor de edad
   private apiService = inject(Api)
 
-  file? = File
+  file?: File | null // no es obligatorio q la suban
 
   seleccionarArchivo( archivo: any ){
-    console.log("Archivo seleccionado: " + archivo);
-    this.file = archivo.target.files[0];
+    const file_seleccionado = archivo.target.files[0];
 
-    this.apiService.postData('upload', this.file).subscribe({
+    console.log("archivo seleccionado: " + file_seleccionado.name);
+    this.file = file_seleccionado;
+
+
+    this.apiService.uploadFile('upload', this.file!).subscribe({
       next: (data) => {
-        console.log("Archivo subido correctamente", data);
+        console.log("archivo subido correctamente", data);
       },
       error: (error) => {
         console.error("Error al subir el archivo", error);

@@ -1,13 +1,15 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 @Schema()
 export class Publicaciones {
-    @Prop()
+    @Prop({ required: true })
     titulo: string;
 
-    @Prop()
+    @Prop({ required: true })
     mensaje: string;
 
-    @Prop()
+    @Prop({ required: true })
     imagen: string;
 }
+
+export const PublicacionesSchema = SchemaFactory.createForClass(Publicaciones);
