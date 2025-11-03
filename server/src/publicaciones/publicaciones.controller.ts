@@ -4,22 +4,14 @@ import { diskStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
 import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
+import { multerConfig } from 'src/config/multer.config';
 
 @Controller('publicaciones')
 export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('imagen', {
-    storage: diskStorage({
-      destination: './public/images',
-      // guardado:
-      filename: (req, file, cb) => {
-        const nombreArchivo = Date.now() + '-' + file.originalname;
-        cb(null, nombreArchivo);
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('imagen', multerConfig))
   // con formdata los campos de @body no funcionan como todo un objeto, por eso van uno por uno
   create(@Body('titulo') titulo: string, @Body('mensaje') mensaje: string, @UploadedFile() file: Express.Multer.File) {
     const publicacionConImagen = {

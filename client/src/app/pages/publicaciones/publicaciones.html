@@ -11,3 +11,15 @@
 
     <button type="submit">Crear Publicación</button>
 </form>
+
+<section>
+  <h2>Publicaciones</h2>
+    @for (publicacion of this.publicaciones; track $index) {
+        <div class="publicacion">
+            <h3>{{ publicacion.titulo }}</h3>
+            <p>{{ publicacion.mensaje }}</p>
+            <img [src]="publicacion.imagen" alt="Imagen de la publicación" />
+           
+        </div>
+    }
+</section>

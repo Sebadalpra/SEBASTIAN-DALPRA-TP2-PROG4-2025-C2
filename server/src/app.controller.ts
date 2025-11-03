@@ -2,6 +2,7 @@ import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/co
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { multerConfig } from './config/multer.config';
 
 @Controller()
 export class AppController {
@@ -13,15 +14,7 @@ export class AppController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('foto', {
-    storage: diskStorage({
-      destination: './public/images',
-      filename: (req, file, cb) => {
-        const nombreArchivo = `${Date.now()}-${file.originalname}`;
-        cb(null, nombreArchivo);
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('foto', multerConfig))
   subirArchivo(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return { message: 'la foto se subió correctamente', file };
