@@ -16,7 +16,7 @@ export class Publicaciones {
     imagen: new FormControl('', [Validators.required])
   });
 
-  private apiService = inject(Api)
+  apiService = inject(Api)
 
   file: File | null = null;
 
@@ -25,6 +25,11 @@ export class Publicaciones {
 
       console.log("archivo seleccionado: " + file_seleccionado.name);
       this.file = file_seleccionado;
+  }
+
+  // Método para obtener la URL completa de la imagen
+  buildRutaImagen(filename: string): string {
+    return this.apiService.buildRutaImagen(filename);
   }
 
   crearPublicacion() {
@@ -44,7 +49,7 @@ export class Publicaciones {
         console.log('Publicación creada exitosamente con imagen:', res);
         this.publicacionesGroup.reset();
         this.file = null;
-        // Recargar las publicaciones para mostrar la nueva
+        // cargar x si hay una nueva publi
         this.cargarPublicaciones();
       },
       error: (error) => {
@@ -54,16 +59,9 @@ export class Publicaciones {
 
   }
 
-  publicaciones: any;
-
-  ngOnInit() {
-    this.cargarPublicaciones();
-  }
-
   cargarPublicaciones() {
-    console.log('Cargando publicaciones...');
     this.apiService.getData('publicaciones').subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.publicaciones = data;
         console.log("Publicaciones cargadas:", this.publicaciones);
       },
@@ -73,13 +71,12 @@ export class Publicaciones {
     });
   }
 
-  // Método para construir la URL completa de la imagen
-  getImageUrl(filename: string): string {
-    if (!filename) return '';
-    // Para local: http://localhost:3000/public/images/nombre-archivo.jpg
-    // Para render: https://tu-servidor.onrender.com/public/images/nombre-archivo.jpg
-    const baseUrl = 'http://localhost:3000'; // Cambia a tu URL de Render si es necesario
-    return `${baseUrl}/public/images/${filename}`;
+  publicaciones: any[] = [];
+
+  ngOnInit() {
+    this.cargarPublicaciones();
   }
+
+
     
 }

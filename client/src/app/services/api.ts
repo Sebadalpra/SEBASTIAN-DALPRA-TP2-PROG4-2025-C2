@@ -11,9 +11,11 @@ export class Api {
 
   local = 'http://localhost:3000';
   render = 'https://sebastian-dalpra-tp2-prog4-2025-c2-1.onrender.com';
+  
+  private baseUrl = this.render;
 
   postData(endpoint: string, data: any) {
-    return this.http.post(`${this.local}/${endpoint}`, data);
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }
 
   uploadFile(endpoint: string, file: File | null) {
@@ -22,11 +24,16 @@ export class Api {
       formData.append('foto', file); // solo si existe
     }
 
-    return this.http.post(`${this.local}/${endpoint}`, formData);
+    return this.http.post(`${this.baseUrl}/${endpoint}`, formData);
   }
 
   getData(endpoint: string) {
-    return this.http.get(`${this.local}/${endpoint}`);
+    return this.http.get(`${this.baseUrl}/${endpoint}`);
+  }
+
+  /// metodo para tener la ruta completa de la imagen
+  buildRutaImagen(filename: string): string {
+    return `${this.baseUrl}/public/images/${filename}`;
   }
 
 }

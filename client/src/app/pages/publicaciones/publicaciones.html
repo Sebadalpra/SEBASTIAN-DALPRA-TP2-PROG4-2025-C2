@@ -18,7 +18,7 @@
         <div class="publicacion">
             <h3>{{ publicacion.titulo }}</h3>
             <p>{{ publicacion.mensaje }}</p>
-            <img [src]=" 'http://localhost:3000/public/images/' + publicacion.imagen" alt="Imagen de la publicación" />
+            <img [src]="buildRutaImagen(publicacion.imagen)" alt="Imagen de la publicación" />
            
         </div>
     }
