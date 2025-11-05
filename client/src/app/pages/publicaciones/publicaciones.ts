@@ -49,7 +49,7 @@ export class Publicaciones {
         console.log('Publicación creada exitosamente con imagen:', res);
         this.publicacionesGroup.reset();
         this.file = null;
-        // cargar x si hay una nueva publi
+        
         this.cargarPublicaciones();
       },
       error: (error) => {

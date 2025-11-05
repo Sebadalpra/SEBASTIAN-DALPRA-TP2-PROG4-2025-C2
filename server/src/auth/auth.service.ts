@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
-import { sign, decode, verify } from 'jsonwebtoken';
+import { sign, decode, verify, TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { CredencialesDto } from './dto/credenciales.dto';
 
 
@@ -43,11 +43,50 @@ export class AuthService {
 
         if( tipo !== 'Bearer' || !token) throw new BadRequestException('encabezado de autorización invalido');
 
-        const tokenValidado = verify(token, process.env.JWT_SECRET!);
+        try {
+            const tokenValidado = verify(token, process.env.JWT_SECRET!);
+            return tokenValidado;
 
-        return tokenValidado;
+        }
+        catch (error) {
+            if (error instanceof TokenExpiredError) {
+                return "Token expirado";
+            } 
+            if (error instanceof JsonWebTokenError) {
+                return "Firma falsa o token manipulado";
+            }
+            return "Error en la verificación del token";
+        }
+
 
     }
 
 
+    // manejar tokens con cookies
+    guardarEnCookie(username: string) {
+        const token = this.createToken(username, false);
+    }
+
+    verificarCookie(token: string) {
+
+        try {
+            const tokenValidado = verify(token, process.env.JWT_SECRET!);
+            return tokenValidado;
+
+        }
+        catch (error) {
+            if (error instanceof TokenExpiredError) {
+                return "Token expirado";
+            } 
+            if (error instanceof JsonWebTokenError) {
+                return "Firma falsa o token manipulado";
+            }
+            return "Error en la verificación del token";
+        }
+
+    }
+
+    LoginCookie(user: CredencialesDto) {
+        return this.guardarEnCookie(user.username);
+    }
 }
