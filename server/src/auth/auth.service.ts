@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
-import { sign, decode } from 'jsonwebtoken';
+import { sign, decode, verify } from 'jsonwebtoken';
 import { CredencialesDto } from './dto/credenciales.dto';
 
 
@@ -11,24 +11,43 @@ export class AuthService {
     constructor(private readonly usuariosService: UsuariosService) {}
 
     async registro(dtoUsuario: CreateUsuarioDto) {
-        return this.usuariosService.create(dtoUsuario);
+        const nuevoUsuario = await this.usuariosService.create(dtoUsuario);
+
+        return this.createToken(nuevoUsuario.username, false);
     }
 
-    login(credencialesDto: CredencialesDto) {
-        // lógica de login
-        const payload: any = {
-            user: credencialesDto.username,
-            admin: false
+    async login(credencialesDto: CredencialesDto) {
+        const usuario = await this.usuariosService.findOne(credencialesDto.username);
+
+        return this.createToken(credencialesDto.username, false);
+    }
+
+    createToken(username: string, isAdmin: boolean) {
+        // payload es la data que va a llevar el token
+        const payload: { user: string; admin: boolean } = {
+            user: username,
+            admin: isAdmin
         };
 
-        const token: string = sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+        const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
+
         return { token : token};
     }
-    authJWT() {
-        // lógica de autenticación vía JWT
+
+    // verificar devuelve el payload del token si es válido
+    verificar(authHeader: string) {
+        console.log(authHeader);
+        if (!authHeader) throw new BadRequestException('no hay encabezado de autorización');
+
+        const [tipo, token] = authHeader.split(' ')[1];
+
+        if( tipo !== 'Bearer' || !token) throw new BadRequestException('encabezado de autorización invalido');
+
+        const tokenValidado = verify(token, process.env.JWT_SECRET!);
+
+        return tokenValidado;
+
     }
 
-    refrescarToken() {
-        // lógica de refresh token
-    }
+
 }

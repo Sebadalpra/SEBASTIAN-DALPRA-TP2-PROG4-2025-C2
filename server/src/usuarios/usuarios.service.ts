@@ -22,11 +22,11 @@ export class UsuariosService {
   }
 
   findAll() {
-    return `This action returns all usuarios`;
+    return this.usuarioModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  findOne(username: string) {
+    return this.usuarioModel.findOne({ username }).exec();
   }
 
   update(id: number, updateUsuarioDto: UpdateUsuarioDto) {

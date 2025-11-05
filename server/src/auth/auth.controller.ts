@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { CredencialesDto } from './dto/credenciales.dto';
@@ -19,13 +19,10 @@ export class AuthController {
     return this.authService.registro(dtoUsuario);
   }
 
-  // Post de autenticacion via token (JWT)
-  AuthJWT() {
-    return this.authService.authJWT();
+  @Get('data')
+  traer(@Headers("Authorization") authHeader: string) {
+    return this.authService.verificar(authHeader);
   }
 
-  // Post de refresh token (cada 15 min)
-  RefrescarToken() {
-    return this.authService.refrescarToken();
-  }
+
 }

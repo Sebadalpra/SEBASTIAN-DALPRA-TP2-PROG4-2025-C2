@@ -3,6 +3,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 @Schema()
 export class Publicaciones {
     @Prop({ required: true })
+    usuario: string;
+
+    @Prop({ required: true })
     titulo: string;
 
     @Prop({ required: true })

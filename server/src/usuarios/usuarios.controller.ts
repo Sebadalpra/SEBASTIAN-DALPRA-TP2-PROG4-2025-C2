@@ -8,7 +8,6 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  // si se ejecuta un post a /usuarios se consume el dto de usuario y se llama al servicio para crearlo
   crearUsuario(@Body() dtoUsuario: CreateUsuarioDto) {
     return this.usuariosService.create(dtoUsuario);
   }
@@ -18,9 +17,9 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuariosService.findOne(+id);
+  @Get(':username')
+  findOne(@Param('username') username: string) {
+    return this.usuariosService.findOne(username);
   }
 
   @Patch(':id')
