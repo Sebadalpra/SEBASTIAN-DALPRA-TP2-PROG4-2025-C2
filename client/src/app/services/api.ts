@@ -17,7 +17,7 @@ export class Api {
   postData(endpoint: string, data: any) {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }
-
+/* 
   uploadFile(endpoint: string, file: File | null) {
     const formData = new FormData();
     if (file) {
@@ -26,7 +26,7 @@ export class Api {
 
     return this.http.post(`${this.baseUrl}/${endpoint}`, formData);
   }
-
+ */
   getData(endpoint: string) {
     return this.http.get(`${this.baseUrl}/${endpoint}`);
   }

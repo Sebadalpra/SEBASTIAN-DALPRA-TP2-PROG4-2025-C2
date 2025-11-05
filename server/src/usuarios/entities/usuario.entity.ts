@@ -25,6 +25,9 @@ export class Usuario {
     @Prop({ required: false })
     descripcion: string;
 
+    @Prop({ required: false })
+    fotoPerfil: string;
+
     @Prop( {default: new Date()})
     fecha_creado: Date;
 }

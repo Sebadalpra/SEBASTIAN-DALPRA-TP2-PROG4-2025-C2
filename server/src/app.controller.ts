@@ -13,11 +13,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post('upload')
+/*   @Post('upload')
   @UseInterceptors(FileInterceptor('foto', multerConfig))
   subirArchivo(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
     return { message: 'la foto se subió correctamente', file };
   }
-
+ */
 }

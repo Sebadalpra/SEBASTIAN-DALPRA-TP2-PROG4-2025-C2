@@ -24,5 +24,7 @@ export class CreateUsuarioDto {
     @IsString()
     descripcion?: string;
 
-
+    @IsOptional()
+    @IsString()
+    fotoPerfil?: string;
 }

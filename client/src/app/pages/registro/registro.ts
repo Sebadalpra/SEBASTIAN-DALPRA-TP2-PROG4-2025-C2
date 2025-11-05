@@ -68,53 +68,44 @@ export class Registro {
   // hacer logica para validar si es mayor de edad
   private apiService = inject(Api)
 
+
+  // -----------------------------
+
+
   file?: File | null // no es obligatorio q la suban
 
   seleccionarArchivo( archivo: any ){
     const file_seleccionado = archivo.target.files[0];
-
     console.log("archivo seleccionado: " + file_seleccionado.name);
     this.file = file_seleccionado;
-
-
-    this.apiService.uploadFile('upload', this.file!).subscribe({
-      next: (data) => {
-        console.log("archivo subido correctamente", data);
-      },
-      error: (error) => {
-        console.error("Error al subir el archivo", error);
-      }
-    });
   }
-
 
   
   enviarRegistro(){
-    // definir los mismos campos que el dto del back
-    const usuario = {
-      nombre: this.nombre?.value,
-      apellido: this.apellido?.value,
-      email: this.email?.value,
-      username: this.userName?.value,
-      password: this.password?.value,
-      fecha_nacimiento: this.fechaNac?.value,
-      descripcion: this.descripcion?.value
+    // Crear FormData con todos los campos incluyendo la foto
+    const formData = new FormData();
+    formData.append('nombre', this.nombre?.value || '');
+    formData.append('apellido', this.apellido?.value || '');
+    formData.append('email', this.email?.value || '');
+    formData.append('username', this.userName?.value || '');
+    formData.append('password', this.password?.value || '');
+    formData.append('fecha_nacimiento', this.fechaNac?.value || '');
+    formData.append('descripcion', this.descripcion?.value || '');
+    
+    // se agrega la foto solo si existe
+    if (this.file) {
+      formData.append('fotoPerfil', this.file);
     }
 
-    this.apiService.postData('auth/registro', usuario).subscribe({
+
+    this.apiService.postData('auth/registro', formData).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-          text: 'Tu cuenta ha sido creada correctamente.',
-        });
-      }
-      ,error: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error en el registro',
-          text: error.error.message,
-        });
+        console.log('Registro exitoso');
+        return "Registro exitoso";
+      },
+      error: (error) => {
+        console.error('Error en el registro:', error);
+        return "Error en el registro";
       }
     });
   }

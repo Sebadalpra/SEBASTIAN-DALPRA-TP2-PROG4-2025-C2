@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Headers, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from '../config/multer.config';
 import { AuthService } from './auth.service';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { CredencialesDto } from './dto/credenciales.dto';
@@ -9,8 +11,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('registro')
-  Registro(@Body() dtoUsuario: CreateUsuarioDto) {
-    return this.authService.registro(dtoUsuario);
+  @UseInterceptors(FileInterceptor('fotoPerfil', multerConfig))
+  Registro(
+    // al ser formdata, cada campo va por separado
+    @Body('nombre') nombre: string,
+    @Body('apellido') apellido: string,
+    @Body('email') email: string,
+    @Body('username') username: string,
+    @Body('password') password: string,
+    @Body('fecha_nacimiento') fecha_nacimiento: string,
+    @Body('descripcion') descripcion: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    const usuarioConFoto = {
+      nombre,
+      apellido,
+      email,
+      username,
+      password,
+      fecha_nacimiento,
+      descripcion,
+      fotoPerfil: file ? file.filename : ''
+    };
+    return this.authService.registro(usuarioConFoto);
   }
 
   @Post('login')

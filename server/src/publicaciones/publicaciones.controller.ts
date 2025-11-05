@@ -12,13 +12,18 @@ export class PublicacionesController {
 
   @Post()
   @UseInterceptors(FileInterceptor('imagen', multerConfig))
-  // con formdata los campos de @body no funcionan como todo un objeto, por eso van uno por uno
-  create(@Body('titulo') titulo: string, @Body('mensaje') mensaje: string, @UploadedFile() file: Express.Multer.File) {
+
+  create(
+    @Body('titulo') titulo: string, 
+    @Body('mensaje') mensaje: string, 
+    @UploadedFile() file: Express.Multer.File) {
+
     const publicacionConImagen = {
       titulo,
       mensaje,
       imagen: file ? file.filename : ''
     };
+
     return this.publicacionesService.create(publicacionConImagen);
   }
 
