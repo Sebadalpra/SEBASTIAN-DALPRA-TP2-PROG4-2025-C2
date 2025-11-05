@@ -39,7 +39,7 @@ export class AuthService {
         console.log(authHeader);
         if (!authHeader) throw new BadRequestException('no hay encabezado de autorización');
 
-        const [tipo, token] = authHeader.split(' ')[1];
+        const [tipo, token] = authHeader.split(' ');
 
         if( tipo !== 'Bearer' || !token) throw new BadRequestException('encabezado de autorización invalido');
 
