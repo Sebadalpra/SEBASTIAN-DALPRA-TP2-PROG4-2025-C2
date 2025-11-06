@@ -8,7 +8,13 @@
                     <p class="text-muted">Bienvenido! Inicia sesión para continuar</p>
                 </div>
 
-                <form [formGroup]="formIniciarSesion" autocomplete="off">
+                <form [formGroup]="formIniciarSesion" (ngSubmit)="iniciarSesion()" autocomplete="off">
+                    
+                    <!-- Mensaje de error -->
+                    <div class="alert alert-danger" role="alert" *ngIf="mensajeError">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
+                    </div>
+
                     <div class="mb-3">
                         <label for="user" class="form-label">Usuario</label>
                         <div class="input-group">
@@ -25,8 +31,14 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3" type="submit">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                    <button class="btn btn-primary w-100 mb-3" type="submit" [disabled]="cargando">
+                        <span *ngIf="!cargando">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </span>
+                        <span *ngIf="cargando">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Iniciando sesión...
+                        </span>
                     </button>
 
                     <div class="text-center">

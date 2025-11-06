@@ -6,7 +6,7 @@ export const routes: Routes = [
     },
     {
         path: 'perfil',
-        loadComponent: () => import('./pages/mi-perfil/mi-perfil').then(m => m.MiPerfil)
+        loadComponent: () => import('./pages/perfil/perfil').then(m => m.Perfil)
     },
     {
         path: 'publicaciones',

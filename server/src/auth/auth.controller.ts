@@ -48,8 +48,8 @@ export class AuthController {
   }
 
   @Post('login/cookie')
-  LoginCookie(@Body() credencialesDto: CredencialesDto, @Res() response: Response) {
-    const token = this.authService.LoginCookie(credencialesDto);
+  async LoginCookie(@Body() credencialesDto: CredencialesDto, @Res() response: Response) {
+    const token = await this.authService.LoginCookie(credencialesDto);
     response.cookie('token', token, {
       httpOnly: true,
       sameSite: 'strict', 

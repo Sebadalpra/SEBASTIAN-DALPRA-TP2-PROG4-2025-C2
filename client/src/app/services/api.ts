@@ -12,11 +12,16 @@ export class Api {
   local = 'http://localhost:3000';
   render = 'https://sebastian-dalpra-tp2-prog4-2025-c2-1.onrender.com';
   
-  private baseUrl = this.local;
+  private baseUrl = this.render;
 
   postData(endpoint: string, data: any) {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }
+
+  postCookie(endpoint: string, data: any) {
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data, { withCredentials: true });
+  }
+  
 /* 
   uploadFile(endpoint: string, file: File | null) {
     const formData = new FormData();

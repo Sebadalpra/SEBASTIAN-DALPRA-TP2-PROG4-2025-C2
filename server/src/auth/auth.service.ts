@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { sign, decode, verify, TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { CredencialesDto } from './dto/credenciales.dto';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -10,14 +11,34 @@ export class AuthService {
 
     constructor(private readonly usuariosService: UsuariosService) {}
 
-    async registro(dtoUsuario: CreateUsuarioDto) {
-        const nuevoUsuario = await this.usuariosService.create(dtoUsuario);
+    async registro(usuario: CreateUsuarioDto) {
+        // Hashear la contraseña antes de guardar el usuario
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(usuario.password, saltRounds);
+        
+        // Crear usuario con la contraseña hasheada
+        const usuarioConPasswordHash = {
+            ...usuario,
+            password: hashedPassword
+        };
+
+        const nuevoUsuario = await this.usuariosService.create(usuarioConPasswordHash);
 
         return this.createToken(nuevoUsuario.username, false);
     }
 
     async login(credencialesDto: CredencialesDto) {
         const usuario = await this.usuariosService.findOne(credencialesDto.username);
+
+        if (!usuario) {
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+        // comparar la contraseña usando bcrypt
+        const passwordValida = await bcrypt.compare(credencialesDto.password, usuario.password);
+        
+        if (!passwordValida) {
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
 
         return this.createToken(credencialesDto.username, false);
     }
@@ -62,9 +83,10 @@ export class AuthService {
     }
 
 
-    // manejar tokens con cookies
+    // ---- manejar tokens con cookies----
     guardarEnCookie(username: string) {
-        const token = this.createToken(username, false);
+        const tokenData = this.createToken(username, false);
+        return tokenData.token;
     }
 
     verificarCookie(token: string) {
@@ -86,7 +108,20 @@ export class AuthService {
 
     }
 
-    LoginCookie(user: CredencialesDto) {
-        return this.guardarEnCookie(user.username);
+    async LoginCookie(credencialesDto: CredencialesDto) {
+        const usuario = await this.usuariosService.findOne(credencialesDto.username);
+
+        if (!usuario) {
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+        // comparar la contraseña usando bcrypt
+        const passwordValida = await bcrypt.compare(credencialesDto.password, usuario.password);
+        
+        if (!passwordValida) {
+            throw new UnauthorizedException('Credenciales inválidas');
+        }
+
+
+        return this.guardarEnCookie(credencialesDto.username);
     }
 }

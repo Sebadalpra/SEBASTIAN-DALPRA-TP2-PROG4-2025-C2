@@ -17,8 +17,11 @@ async function bootstrap() {
     }),
   );
 
-  // cors para conectar el 4200 con el 3000
-  app.enableCors();
+  // cors para conectar el 4200 con el 3000 y permitir cookies
+  app.enableCors({
+    origin: true, 
+    credentials: true, // permite enviar y recibir cookies
+  });
 
   // archivos estáticos desde la carpeta public/images
   app.use('/public/images', express.static(join(__dirname, '..', 'public/images')));
