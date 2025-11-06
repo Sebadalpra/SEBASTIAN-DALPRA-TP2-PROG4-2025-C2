@@ -80,6 +80,7 @@ export class Registro {
     this.file = file_seleccionado;
   }
 
+    private router = inject(Router);
   
   enviarRegistro(){
     // Crear FormData con todos los campos incluyendo la foto
@@ -98,12 +99,25 @@ export class Registro {
     }
 
 
+
     this.apiService.postData('auth/registro', formData).subscribe({
       next: () => {
         console.log('Registro exitoso');
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Registrado correctamente.',
+        });
+        
+        this.router.navigate(['/perfil']);
         return "Registro exitoso";
       },
       error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el registro',
+          text: 'No se pudo completar el registro.',
+        });
         console.error('Error en el registro:', error);
         return "Error en el registro";
       }
