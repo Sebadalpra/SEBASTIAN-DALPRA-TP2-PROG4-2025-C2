@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 @Schema()
 export class Publicaciones {
     @Prop({ required: true })
-    usuario: string;
+    username: string;
 
     @Prop({ required: true })
     titulo: string;

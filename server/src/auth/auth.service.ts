@@ -47,7 +47,7 @@ export class AuthService {
         // payload es la data que va a llevar el token
         const payload: { user: string; admin: boolean } = {
             user: username,
-            admin: isAdmin
+            admin: isAdmin,
         };
 
         const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });

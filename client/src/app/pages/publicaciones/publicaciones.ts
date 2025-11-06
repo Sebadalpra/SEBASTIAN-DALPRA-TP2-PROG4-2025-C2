@@ -44,7 +44,7 @@ export class Publicaciones {
     formData.append('mensaje', this.publicacionesGroup.get("mensaje")?.value || '');
     formData.append('imagen', this.file);
 
-    this.apiService.postData('publicaciones', formData).subscribe({
+    this.apiService.postCookie('publicaciones', formData).subscribe({
       next: (res) => {
         console.log('Publicación creada exitosamente con imagen:', res);
         this.publicacionesGroup.reset();

@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, UnauthorizedException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
 import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
 import { multerConfig } from 'src/config/multer.config';
+import { verify } from 'jsonwebtoken';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -12,18 +13,34 @@ export class PublicacionesController {
 
   @Post()
   @UseInterceptors(FileInterceptor('imagen', multerConfig))
-
   create(
-    @Body('titulo') titulo: string, 
-    @Body('mensaje') mensaje: string, 
-    @UploadedFile() file: Express.Multer.File) {
+    @Body('titulo') titulo: string,
+    @Body('mensaje') mensaje: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: any
+  ) {
 
+    // leer el token de la cookie
+    const token = req.cookies?.token;
+    if (!token) {
+      throw new UnauthorizedException('No autenticado');
+    }
+    
+    // ----------
+    let username = '';
+    try {
+        const payload: any = verify(token, process.env.JWT_SECRET!); // verify es para verificar y decodificar el token
+        username = payload.user;
+    } catch (e) {
+        throw new UnauthorizedException('Token inválido');
+    }
     const publicacionConImagen = {
       titulo,
       mensaje,
-      imagen: file ? file.filename : ''
+      imagen: file ? file.filename : '',
+      username
     };
-
+    
     return this.publicacionesService.create(publicacionConImagen);
   }
 

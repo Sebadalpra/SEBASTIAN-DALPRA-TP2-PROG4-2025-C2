@@ -1,6 +1,9 @@
 import { IsString } from 'class-validator';
 
 export class CreatePublicacionesDto {
+    @IsString() 
+    username: string;
+
     @IsString()
     titulo: string;
 
