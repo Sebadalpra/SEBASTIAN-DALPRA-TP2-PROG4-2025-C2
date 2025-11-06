@@ -114,7 +114,7 @@ export class AuthService {
         if (!usuario) {
             throw new UnauthorizedException('Credenciales inválidas');
         }
-        // comparar la contraseña usando bcrypt
+        // si el usuario existe, comparar las contraseñas
         const passwordValida = await bcrypt.compare(credencialesDto.password, usuario.password);
         
         if (!passwordValida) {

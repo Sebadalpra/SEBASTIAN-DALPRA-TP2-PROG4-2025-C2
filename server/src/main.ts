@@ -19,7 +19,7 @@ async function bootstrap() {
 
   // cors para conectar el 4200 con el 3000 y permitir cookies
   app.enableCors({
-    origin: true, 
+    origin: 'http://localhost:4200', 
     credentials: true, // permite enviar y recibir cookies
   });
 
