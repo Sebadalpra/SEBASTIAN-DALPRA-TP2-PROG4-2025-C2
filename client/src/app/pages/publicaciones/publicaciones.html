@@ -1,26 +1,76 @@
-<p>publicaciones works!</p>
-
-<form action="" [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()" (keyup.enter)="crearPublicacion()">
-    <input type="text" placeholder="Titulo" formControlName="titulo" />
-    <input type="text" placeholder="Mensaje" formControlName="mensaje" />
-
-    
-        <div class="floating-label">
-            <input type="file" (change)="seleccionarArchivo($event) " formControlName="imagen" />
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Formulario para crear publicación -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="rounded-circle bg-primary bg-gradient text-white d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                        <i class="bi bi-pencil-square fs-5"></i>
+                    </div>
+                    <h5 class="card-title mb-0 fw-bold">Crear Nueva Publicación</h5>
+                </div>
+                <form [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-card-heading me-1 text-primary"></i>Título
+                        </label>
+                        <input type="text" class="form-control form-control-lg border-2" placeholder="Escribe un título atractivo..." formControlName="titulo" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-chat-left-text me-1 text-primary"></i>Contenido
+                        </label>
+                        <textarea class="form-control border-2" rows="4" placeholder="¿Qué estás pensando? Comparte algo interesante..." formControlName="mensaje"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-image me-1 text-primary"></i>Imagen (opcional)
+                        </label>
+                        <div class="input-group">
+                            <input type="file" class="form-control border-2" (change)="seleccionarArchivo($event)" formControlName="imagen" accept="image/*" />
+                        </div>
+                        <small class="text-muted">Formatos admitidos: JPG, PNG, GIF</small>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send-fill me-2"></i>Publicar Ahora
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-    <button type="submit">Crear Publicación</button>
-</form>
-
-<h2>Publicaciones</h2>
-<div class="">
-    @for (publicacion of this.publicaciones; track $index) {
-        <div class="publicacion card mb-3">
-            <h3>Usuario Nombre</h3>
-            <h3>{{ publicacion.titulo }}</h3>
-            <p>{{ publicacion.mensaje }}</p>
-            <img [src]="buildRutaImagen(publicacion.imagen)" alt="Imagen de la publicación" />
-           
-        </div>
-    }
+        <!-- Lista de publicaciones -->
+        <h4 class="mb-3">
+            <i class="bi bi-newspaper me-2"></i>Publicaciones Recientes
+        </h4>
+        @for (publicacion of this.publicaciones; track $index) {
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">Usuario</h6>
+                            <small class="text-muted">Hace un momento</small>
+                        </div>
+                    </div>
+                    <h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
+                    <p class="card-text">{{ publicacion.mensaje }}</p>
+                    @if (publicacion.imagen) {
+                        <div class="text-center mb-3">
+                            <img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />
+                        </div>
+                    }
+                    <hr class="my-3">
+                    <div class="d-flex gap-4 text-muted">
+                        <small class="cursor-pointer"><i class="bi bi-heart me-1"></i>Me gusta</small>
+                        <small class="cursor-pointer"><i class="bi bi-chat me-1"></i>Comentar</small>
+                        <small class="cursor-pointer"><i class="bi bi-share me-1"></i>Compartir</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
