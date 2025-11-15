@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Headers, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../config/multer.config';
 import { AuthService } from './auth.service';
 import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { CredencialesDto } from './dto/credenciales.dto';
 import type { response, Response, Request } from 'express';
+import { JwtCookieGuard } from 'src/guards/jwt-cookie/jwt-cookie.guard';
+import { decode } from 'jsonwebtoken';
 
 @Controller('auth')
 export class AuthController {
@@ -54,7 +56,7 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'strict', 
       //secure: false , // en desarrollo (http) en producción debe cambiar a true (https)
-      expires: new Date(Date.now() + 15 * 60 * 1000) // 15 minutos
+      expires: new Date(Date.now() + 1 * 60 * 1000) // el navegador borra la cookie en 1 minuto
     }); 
     response.json({ message: "Logueado con cookie" });
 
@@ -64,5 +66,13 @@ export class AuthController {
   traerCookie(@Req() request: Request) {
     const token = request.cookies["token"] as string;
     return this.authService.verificarCookie(token);
+  }
+
+  @UseGuards(JwtCookieGuard)
+  @Get('data/jwt/cookie')
+  traerConGuardYCookie(@Req() request: Request) {
+    const token = request.cookies["token"] as string;
+    const datos = decode(token);
+    return datos;
   }
 }
