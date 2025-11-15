@@ -41,6 +41,20 @@ export class Api {
     return `${this.baseUrl}/public/images/${filename}`;
   }
 
+
+    // métodos para publicaciones: like, unlike, comentar
+  likePublicacion(id: string) {
+    return this.http.post(`${this.baseUrl}/publicaciones/${id}/like`, {}, { withCredentials: true });
+  }
+
+  unlikePublicacion(id: string) {
+    return this.http.post(`${this.baseUrl}/publicaciones/${id}/unlike`, {}, { withCredentials: true });
+  }
+
+  comentarPublicacion(id: string, texto: string) {
+    return this.http.post(`${this.baseUrl}/publicaciones/${id}/comentarios`, { texto }, { withCredentials: true });
+  }
+
 }
 
 

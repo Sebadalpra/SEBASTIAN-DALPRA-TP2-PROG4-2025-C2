@@ -1,15 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Param, Delete } from '@nestjs/common';
 import { PublicacionesService } from './publicaciones.service';
-import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
-import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
+import { CreateComentarioDto } from './dto/create-comentario.dto';
 
 @Controller('comentario')
 export class ComentarioController {
   constructor(private readonly comentarioService: PublicacionesService) {}
 
-  @Post()
-  create(@Body() createComentario: CreatePublicacionesDto) { 
-    return this.comentarioService.createComentario(createComentario);
+  @Post(':publicacionId')
+  create(@Param('publicacionId') publicacionId: string, @Body() createComentario: CreateComentarioDto) { 
+    return this.comentarioService.crearComentario(publicacionId, createComentario);
   }
 
   @Delete(':id')

@@ -6,6 +6,7 @@ import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
 import { multerConfig } from 'src/config/multer.config';
 import { verify } from 'jsonwebtoken';
+import { CreateComentarioDto } from './dto/create-comentario.dto';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -49,14 +50,60 @@ export class PublicacionesController {
     return this.publicacionesService.findAll()
   }
 
-  @Get(':id') // por uuario para traer las 3 publicaciones del perfil
+  @Get(':id') // por usuario para traer una publicación por id
   findOne(@Param('id') id: string) {
-    return this.publicacionesService.findOne(+id);
+    return this.publicacionesService.findOne(id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.publicacionesService.remove(+id);
+  }
+
+  @Post(':id/like')
+  async like(@Param('id') id: string, @Req() req: any) {
+    const token = req.cookies?.token;
+    if (!token) throw new UnauthorizedException('No autenticado');
+    let username = '';
+    try {
+      const payload: any = verify(token, process.env.JWT_SECRET!);
+      username = payload.user;
+    } catch (e) {
+      throw new UnauthorizedException('Token inválido');
+    }
+    return this.publicacionesService.addLike(id, username);
+  }
+
+  @Post(':id/unlike')
+  async unlike(@Param('id') id: string, @Req() req: any) {
+    const token = req.cookies?.token;
+    if (!token) throw new UnauthorizedException('No autenticado');
+    let username = '';
+    try {
+      const payload: any = verify(token, process.env.JWT_SECRET!);
+      username = payload.user;
+    } catch (e) {
+      throw new UnauthorizedException('Token inválido');
+    }
+    return this.publicacionesService.removeLike(id, username);
+  }
+
+  @Post(':id/comentarios')
+  async comentar(@Param('id') id: string, @Body() comentarioDto: CreateComentarioDto, @Req() req: any) {
+    console.log('comentario recibido:', comentarioDto);
+
+    const token = req.cookies?.token;
+    if (!token) throw new UnauthorizedException('No autenticado');
+    let username = '';
+    try {
+      const payload: any = verify(token, process.env.JWT_SECRET!);
+      username = payload.user;
+    } catch (e) {
+      throw new UnauthorizedException('Token inválido');
+    }
+    // usar el usarname obtenido desde el token y en el dto q sea campo opcional
+    comentarioDto.username = username;
+    return this.publicacionesService.crearComentario(id, comentarioDto);
   }
 
 

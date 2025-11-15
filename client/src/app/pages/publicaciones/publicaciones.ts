@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
+import { Publicacion } from '../../components/publicacion/publicacion';
 
 @Component({
   selector: 'app-publicaciones',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, Publicacion],
   templateUrl: './publicaciones.html',
   styleUrl: './publicaciones.css',
 })

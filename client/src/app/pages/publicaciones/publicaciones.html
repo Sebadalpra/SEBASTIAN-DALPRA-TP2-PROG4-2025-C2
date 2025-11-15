@@ -45,32 +45,7 @@
             <i class="bi bi-newspaper me-2"></i>Publicaciones Recientes
         </h4>
         @for (publicacion of this.publicaciones; track $index) {
-            <div class="card shadow-sm mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-0">{{ publicacion.username }}</h6>
-                            <small class="text-muted">Hace un momento</small>
-                        </div>
-                    </div>
-                    <h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
-                    <p class="card-text">{{ publicacion.mensaje }}</p>
-                    @if (publicacion.imagen) {
-                        <div class="text-center mb-3">
-                            <img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />
-                        </div>
-                    }
-                    <hr class="my-3">
-                    <div class="d-flex gap-4 text-muted">
-                        <small class="cursor-pointer"><i class="bi bi-heart me-1"></i>Me gusta</small>
-                        <small class="cursor-pointer"><i class="bi bi-chat me-1"></i>Comentar</small>
-                        <small class="cursor-pointer"><i class="bi bi-share me-1"></i>Compartir</small>
-                    </div>
-                </div>
-            </div>
+            <app-publicacion [publicacion]="publicacion"></app-publicacion>
         }
     </div>
 </div>

@@ -1,1 +1,37 @@
-<p>publicacion works!</p>
+<div class="card shadow-sm mb-3">
+	<div class="card-body">
+		<div class="d-flex align-items-center mb-3">
+			<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+				<i class="bi bi-person-fill"></i>
+			</div>
+			<div class="ms-3">
+				<h6 class="mb-0">{{ publicacion.username }}</h6>
+				<small class="text-muted">Hace un momento</small>
+			</div>
+		</div>
+		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
+		<p class="card-text">{{ publicacion.mensaje }}</p>
+			<div *ngIf="publicacion.imagen" class="text-center mb-3">
+				<img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm border border-2" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />
+			</div>
+		<hr class="my-3">
+		<div class="d-flex gap-2 mb-2">
+			<button class="btn btn-outline-danger btn-sm" (click)="darLike()" [disabled]="cargandoLike">
+				<i class="bi bi-heart me-1"></i>Me gusta ({{ publicacion.likes?.length || 0 }})
+			</button>
+			<button class="btn btn-outline-secondary btn-sm" (click)="quitarLike()" [disabled]="cargandoLike">
+				<i class="bi bi-x-circle me-1"></i>Quitar Like
+			</button>
+		</div>
+		<div class="comentarios mt-3">
+			<h6 class="fw-bold">Comentarios</h6>
+			<div *ngFor="let c of publicacion.comentarios" class="mb-1">
+				<span class="fw-semibold">{{ c.username }}:</span> {{ c.texto }}
+			</div>
+			<div class="input-group mt-2">
+				<input [(ngModel)]="nuevoComentario" class="form-control form-control-sm" placeholder="Escribe un comentario..." />
+				<button class="btn btn-primary btn-sm" (click)="comentar()" [disabled]="cargandoComentario">Comentar</button>
+			</div>
+		</div>
+	</div>
+</div>
