@@ -1,0 +1,43 @@
+.foto-perfil-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+h2 {
+  color: #2c3e50;
+}
+
+h4 {
+  font-weight: 600;
+}
+
+h5 {
+  color: #34495e;
+}
+
+p strong {
+  color: #34495e;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.card-header {
+  font-weight: 600;
+}

@@ -1,1 +1,116 @@
-<p>perfil works!</p>
+<div class="container mt-4">
+	<!-- Spinning de carga -->
+	@if (cargando) {
+		<div class="text-center py-5">
+			<div class="spinner-border text-primary" role="status">
+				<span class="visually-hidden">Cargando...</span>
+			</div>
+			<p class="mt-3">Cargando perfil...</p>
+		</div>
+	}
+
+	@if (error && !cargando) {
+		<div class="alert alert-danger" role="alert">{{ error }}</div>
+	}
+
+	<!-- Contenido del perfil -->
+	@else {
+		<!-- Tarjeta del usuario -->
+		<div class="card shadow-sm mb-4">
+			<div class="card-body">
+				<div class="row">
+					<!-- Foto de perfil -->
+					<div class="col-md-3 text-center">
+						<div class="foto-perfil-container mb-3">
+                            
+                            @if (this.usuario) {
+                                <img [src]="buildRutaImagen(this.usuario.fotoPerfil)" 
+                                    class="img-fluid rounded-circle border border-3 border-primary shadow" 
+                                    alt="Foto de perfil"
+                                    style="width: 150px; height: 150px; object-fit: cover;"/>
+                            }
+                            @else {
+                                <div 
+                                    class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-3 border-primary shadow mx-auto" 
+                                    style="width: 150px; height: 150px; font-size: 4rem;">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            }
+						</div>
+					</div>
+
+					<!-- Información del usuario -->
+					<div class="col-md-9">
+						<h2 class="fw-bold mb-3">{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+						
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<p class="mb-2">
+									<i class="bi bi-person-badge text-primary me-2"></i>
+									<strong>Usuario:</strong> {{ usuario.username }}
+								</p>
+							</div>
+							<div class="col-sm-6">
+								<p class="mb-2">
+									<i class="bi bi-envelope text-primary me-2"></i>
+									<strong>Email:</strong> {{ usuario.email }}
+								</p>
+							</div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<p class="mb-2">
+									<i class="bi bi-cake text-primary me-2"></i>
+									<strong>Fecha de nacimiento:</strong> {{ formatearFecha(usuario.fecha_nacimiento) }}
+								</p>
+							</div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-12">
+								<p class="mb-2">
+									<i class="bi bi-calendar-check text-primary me-2"></i>
+									<strong>Miembro desde:</strong> {{ formatearFecha(usuario.fecha_creado) }}
+								</p>
+						</div>
+					</div>
+
+						@if (usuario.descripcion) {
+							<div class="row">
+								<div class="col-12">
+									<hr class="my-3">
+									<h5 class="fw-bold mb-2">
+										<i class="bi bi-info-circle text-primary me-2"></i>Descripción
+									</h5>
+									<p class="text-muted">{{ usuario.descripcion }}</p>
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Sección de publicaciones -->
+		<div class="card shadow-sm">
+			<div class="card-header bg-primary text-white">
+				<h4 class="mb-0">
+					<i class="bi bi-journal-text me-2"></i>Mis últimas 3 publicaciones
+				</h4>
+			</div>
+			<div class="card-body">
+				@if (publicaciones.length === 0) {
+					<div class="text-center py-4">
+						<i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+						<p class="text-muted mt-3">No tenés publicaciones aún</p>
+					</div>
+				}
+
+				@for (publicacion of publicaciones; track publicacion._id) {
+					<app-publicacion [publicacion]="publicacion"></app-publicacion>
+				}
+			</div>
+		</div>
+	}
+</div>

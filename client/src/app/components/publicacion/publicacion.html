@@ -11,9 +11,11 @@
 		</div>
 		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
 		<p class="card-text">{{ publicacion.mensaje }}</p>
-			<div *ngIf="publicacion.imagen" class="text-center mb-3">
-				<img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm border border-2" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />
-			</div>
+			@if (publicacion.imagen) {
+				<div class="text-center mb-3">
+					<img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm border border-2" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />
+				</div>
+			}
 		<hr class="my-3">
 		<div class="d-flex gap-2 mb-2">
 			<button class="btn btn-outline-danger btn-sm" (click)="darLike()" [disabled]="cargandoLike">
@@ -25,9 +27,11 @@
 		</div>
 		<div class="comentarios mt-3">
 			<h6 class="fw-bold">Comentarios</h6>
-			<div *ngFor="let c of publicacion.comentarios" class="mb-1">
-				<span class="fw-semibold">{{ c.username }}:</span> {{ c.texto }}
-			</div>
+			@for (c of publicacion.comentarios; track $index) {
+				<div class="mb-1">
+					<span class="fw-semibold">{{ c.username }}:</span> {{ c.texto }}
+				</div>
+			}
 			<div class="input-group mt-2">
 				<input [(ngModel)]="nuevoComentario" class="form-control form-control-sm" placeholder="Escribe un comentario..." />
 				<button class="btn btn-primary btn-sm" (click)="comentar()" [disabled]="cargandoComentario">Comentar</button>

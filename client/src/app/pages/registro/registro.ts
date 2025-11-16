@@ -21,7 +21,7 @@ export class Registro {
     password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*\\d).{8,}$')]),
     confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*\\d).{8,}$')]),
     fechaNacimiento: new FormControl('', [Validators.required, this.validarMayorDeEdad.bind(this)]),
-    descripcion: new FormControl('', [Validators.required, Validators.maxLength(200)])
+    descripcion: new FormControl('', [Validators.maxLength(200)])
   },
   {validators: [this.validarPasswords]}
 )

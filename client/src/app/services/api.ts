@@ -36,6 +36,10 @@ export class Api {
     return this.http.get(`${this.baseUrl}/${endpoint}`);
   }
 
+  getDataConCookie(endpoint: string) {
+    return this.http.get(`${this.baseUrl}/${endpoint}`, { withCredentials: true });
+  }
+
   /// metodo para tener la ruta completa de la imagen
   buildRutaImagen(filename: string): string {
     return `${this.baseUrl}/public/images/${filename}`;
