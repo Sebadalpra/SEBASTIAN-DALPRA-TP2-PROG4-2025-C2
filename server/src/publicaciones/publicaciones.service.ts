@@ -38,7 +38,7 @@ export class PublicacionesService {
   async crearComentario(publicacionId: string, comentarioDto: CreateComentarioDto) {
     return this.publicacionesModel.findByIdAndUpdate(
       publicacionId,
-      { $push: { comentarios: comentarioDto } },
+      { $push: { comentarios: comentarioDto} },
       { new: true }
     );
   }

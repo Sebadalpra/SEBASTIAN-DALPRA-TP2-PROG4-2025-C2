@@ -12,13 +12,13 @@
                 <form [formGroup]="publicacionesGroup" (ngSubmit)="crearPublicacion()">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-card-heading me-1 text-primary"></i>Título
+                            <i class="bi bi-card-heading me-1 text-primary"></i>Título *
                         </label>
                         <input type="text" class="form-control form-control-lg border-2" placeholder="Escribe un título atractivo..." formControlName="titulo" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-chat-left-text me-1 text-primary"></i>Contenido
+                            <i class="bi bi-chat-left-text me-1 text-primary"></i>Contenido *
                         </label>
                         <textarea class="form-control border-2" rows="4" placeholder="¿Qué estás pensando? Comparte algo interesante..." formControlName="mensaje"></textarea>
                     </div>
@@ -45,7 +45,8 @@
             <i class="bi bi-newspaper me-2"></i>Publicaciones Recientes
         </h4>
         @for (publicacion of this.publicaciones; track $index) {
-            <app-publicacion [publicacion]="publicacion"></app-publicacion>
+            <!-- por cada publicacion crear un componente publicacion: -->
+            <app-publicacion [publicacion]="publicacion"></app-publicacion> 
         }
     </div>
 </div>

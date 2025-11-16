@@ -13,7 +13,7 @@ export class Publicaciones {
     @Prop({ required: true })
     mensaje: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     imagen: string;
 
     @Prop({ default: new Date() })

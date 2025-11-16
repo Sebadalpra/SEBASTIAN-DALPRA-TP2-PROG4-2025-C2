@@ -67,7 +67,7 @@ export class PublicacionesController {
     let username = '';
     try {
       const payload: any = verify(token, process.env.JWT_SECRET!);
-      username = payload.user;
+      username = payload.user; // obtener el nombre de usuario del token
     } catch (e) {
       throw new UnauthorizedException('Token inválido');
     }
@@ -81,7 +81,7 @@ export class PublicacionesController {
     let username = '';
     try {
       const payload: any = verify(token, process.env.JWT_SECRET!);
-      username = payload.user;
+      username = payload.user; 
     } catch (e) {
       throw new UnauthorizedException('Token inválido');
     }

@@ -60,6 +60,9 @@
                             @if (fechaNac?.errors?.["required"] != null && fechaNac?.touched) {
                                 <small class="text-danger">La fecha de nacimiento es requerida.</small>
                             }
+                            @if (fechaNac?.errors?.["menorDeEdad"] && fechaNac?.touched) {
+                                <small class="text-danger">Debes ser mayor de 18 años para registrarte.</small>
+                            }
                         </div>
                     </div>
 
@@ -71,7 +74,10 @@
                                 <small class="text-danger">La contraseña es requerida.</small>
                             }
                             @if (password?.errors?.["minlength"]) {
-                                <small class="text-danger">La contraseña debe tener al menos 6 caracteres.</small>
+                                <small class="text-danger">La contraseña debe tener al menos 8 caracteres.</small>
+                            }
+                            @if (password?.errors?.["pattern"]) {
+                                <small class="text-danger">La contraseña debe tener al menos una mayúscula y un número.</small>
                             }
                         </div>
 
@@ -82,7 +88,10 @@
                                 <small class="text-danger">La confirmación de la contraseña es requerida.</small>
                             }
                             @if (confirmPassword?.errors?.["minlength"]) {
-                                <small class="text-danger">La confirmación de la contraseña debe tener al menos 6 caracteres.</small>
+                                <small class="text-danger">La confirmación de la contraseña debe tener al menos 8 caracteres.</small>
+                            }
+                            @if (confirmPassword?.errors?.["pattern"]) {
+                                <small class="text-danger">La confirmación de la contraseña debe tener al menos una mayúscula y un número.</small>
                             }
                         </div>
                     </div>

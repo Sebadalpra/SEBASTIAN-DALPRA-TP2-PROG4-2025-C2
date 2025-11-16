@@ -18,9 +18,9 @@ export class Registro {
     apellido: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÀ-ÿ\\s]+$')]),
     email: new FormControl('', [Validators.required, Validators.email]),
     userName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z0-9]+$')]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    fechaNacimiento: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*\\d).{8,}$')]),
+    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*\\d).{8,}$')]),
+    fechaNacimiento: new FormControl('', [Validators.required, this.validarMayorDeEdad.bind(this)]),
     descripcion: new FormControl('', [Validators.required, Validators.maxLength(200)])
   },
   {validators: [this.validarPasswords]}
@@ -31,9 +31,31 @@ export class Registro {
     const confirmPassword = control.get("confirmPassword")?.value
 
     if (password != confirmPassword) {
-      return {iguales: false}
+      return {diferentes: true}
     }
     return null
+  }
+
+  validarMayorDeEdad(control: AbstractControl): ValidationErrors | null {
+    const fechaNacimiento = control.value;
+    if (!fechaNacimiento) {
+      return null;
+    }
+
+    const fechaActual = new Date();
+    const fechaUser = new Date(fechaNacimiento);
+
+    let edad = fechaActual.getFullYear() - fechaUser.getFullYear();
+
+    // a.si tiene 17 años y el mes de nacimiento es menor al actual: no es mayor de edad
+    // b. si tiene 17 años y el mes es igual pero el dia de nacimiento es menor al actual: no es mayor de edad
+    // c. en cualquier otro caso, es mayor de edad
+    const mes = fechaActual.getMonth() - fechaUser.getMonth();
+    if (mes < 0 || (mes === 0 && fechaActual.getDate() < fechaUser.getDate())) {
+      edad--;
+    }
+
+    return edad >= 18 ? null : { menorDeEdad: true };
   }
 
   get nombre() {
@@ -83,6 +105,36 @@ export class Registro {
     private router = inject(Router);
   
   enviarRegistro(){
+    // Validar que las contraseñas coincidan
+    if (this.grupoRegistro.errors?.['diferentes']) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Contraseñas no coinciden',
+        text: 'Las contraseñas deben ser iguales.',
+      });
+      return;
+    }
+
+    // Validar que sea mayor de edad
+    if (this.fechaNac?.errors?.['menorDeEdad']) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Edad insuficiente',
+        text: 'Debes ser mayor de 18 años para registrarte.',
+      });
+      return;
+    }
+
+    // Validar que el formulario sea válido
+    if (!this.grupoRegistro.valid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Formulario inválido',
+        text: 'Por favor, completa todos los campos correctamente.',
+      });
+      return;
+    }
+
     // Crear FormData con todos los campos incluyendo la foto
     const formData = new FormData();
     formData.append('nombre', this.nombre?.value || '');
@@ -112,11 +164,12 @@ export class Registro {
         this.router.navigate(['/perfil']);
         return "Registro exitoso";
       },
+      // manejar error por si falta algún campo
       error: (error) => {
         Swal.fire({
           icon: 'error',
           title: 'Error en el registro',
-          text: 'No se pudo completar el registro.',
+          text: 'Hubo un error durante el registro. Por favor, verifica tus datos e intenta nuevamente.',
         });
         console.error('Error en el registro:', error);
         return "Error en el registro";

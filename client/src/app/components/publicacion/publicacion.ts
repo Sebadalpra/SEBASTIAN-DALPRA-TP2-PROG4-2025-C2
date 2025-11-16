@@ -22,7 +22,7 @@ export class Publicacion {
 
   darLike() {
     if (this.cargandoLike) return;
-    this.cargandoLike = true;
+    this.cargandoLike = true; // deshabilita el boton para evitar doble click en el proceso
     this.api.likePublicacion(this.publicacion._id).subscribe({
       next: (res: any) => {
         this.publicacion.likes = res.likes;
@@ -31,7 +31,7 @@ export class Publicacion {
       error: () => { this.cargandoLike = false; }
     });
   }
-
+  
   quitarLike() {
     if (this.cargandoLike) return;
     this.cargandoLike = true;

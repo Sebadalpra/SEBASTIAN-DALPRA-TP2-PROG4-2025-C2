@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, IsDateString, IsOptional } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsDateString, IsOptional, Matches } from 'class-validator';
 
 export class CreateUsuarioDto {
     @IsString()
@@ -14,7 +14,8 @@ export class CreateUsuarioDto {
     username: string;
 
     @IsString()
-    @MinLength(8, { message: 'La contraseña debe tener al menos 6 caracteres' })
+    @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
+    @Matches(/^(?=.*[A-Z])(?=.*\d).{8,}$/, { message: 'La contraseña debe tener al menos una mayúscula y un número' })
     password: string;
 
     @IsDateString({}, { message: 'La fecha de nacimiento debe tener formato (YYYY-MM-DD)' })
