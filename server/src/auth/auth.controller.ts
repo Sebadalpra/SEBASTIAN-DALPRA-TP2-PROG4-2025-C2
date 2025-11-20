@@ -56,23 +56,31 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'strict', 
       //secure: false , // en desarrollo (http) en producción debe cambiar a true (https)
-      expires: new Date(Date.now() + 1 * 60 * 1000) // el navegador borra la cookie en 1 minuto
+      expires: new Date(Date.now() + 2 * 60 * 1000) // el navegador borra la cookie en 2 minutos
     }); 
     response.json({ message: "Logueado con cookie" });
 
   }
 
   @Get('data/cookie')
+  @UseGuards(JwtCookieGuard)
   traerCookie(@Req() request: Request) {
     const token = request.cookies["token"] as string;
     return this.authService.verificarCookie(token);
   }
 
+  @Post('refresh/cookie')
   @UseGuards(JwtCookieGuard)
-  @Get('data/jwt/cookie')
-  traerConGuardYCookie(@Req() request: Request) {
-    const token = request.cookies["token"] as string;
-    const datos = decode(token);
-    return datos;
+  async refreshCookie(@Req() request: Request, @Res() response: Response) {
+    const user = (request as any).user;
+    const nuevoToken = this.authService.guardarEnCookie(user.user);
+    
+    response.cookie('token', nuevoToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + 2 * 60 * 1000)
+    });
+    
+    response.json({ message: 'Token refrescado' });
   }
 }

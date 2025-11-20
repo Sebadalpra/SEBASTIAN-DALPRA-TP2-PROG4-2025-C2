@@ -4,7 +4,7 @@ import { TokenExpiredError, verify } from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class JwtCookieGuard implements CanActivate {lee
+export class JwtCookieGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -15,18 +15,23 @@ export class JwtCookieGuard implements CanActivate {lee
 
     if (token && token !== ' ') {
       try {
-        // Verificar el token usando la clave secreta
+        // verificar el token usando la clave secreta
         const payload = verify(token, process.env.JWT_SECRET!);
         (request as any).user = payload; // esto permite acceder al payload en los controladores
-        // Si la verificación es exitosa, permitir el acceso
+        console.log('✅ Guard: Token válido para usuario:', (payload as any).user);
+        // si la verificación es exitosa, obtener el payload y permitir el acceso
         return true;
       } catch (error) {
         if (error instanceof TokenExpiredError) {
-          throw new HttpException('Token expirado', 401);
+          console.log("El token expiro")
+          throw new HttpException({ message: 'Token expirado' }, 401);
         }
+        console.log("Token inválido");
+        throw new HttpException({ message: 'Token inválido' }, 401);
       }
     }
-    return false;
+    console.log("No hay token o usuario no inicio sesión");
+    throw new HttpException({ message: 'No autenticado' }, 401);
     
   }
 }

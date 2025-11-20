@@ -42,7 +42,7 @@ export class Api {
 
   /// metodo para tener la ruta completa de la imagen
   buildRutaImagen(filename: string): string {
-    return `${this.baseUrl}/public/images/${filename}`;
+    return `${this.baseUrl}/public/images/${filename}`; 
   }
 
 

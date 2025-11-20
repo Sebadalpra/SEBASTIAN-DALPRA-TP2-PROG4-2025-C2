@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Api } from '../../services/api';
+import { SesionService } from '../../services/sesion.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,6 +15,7 @@ export class Login {
 
   private api = inject(Api);
   private router = inject(Router);
+  private sesionService = inject(SesionService);
 
   // variables para manejar estados
   mensajeError: string = '';
@@ -24,6 +26,8 @@ export class Login {
     user: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
   })
+
+  // -------
 
   iniciarSesion() {
     if (this.formIniciarSesion.invalid) {
@@ -41,11 +45,14 @@ export class Login {
 
     this.api.postCookie('auth/login/cookie', credenciales).subscribe({
       next: (response: any) => {
-        // El token se guarda automáticamente en la cookie
-        console.log('Login exitoso:', response);
-        this.router.navigate(['/perfil']);
+        // token se guarda automáticamente en la cookie
+        console.log('login exitoso:', response);
+
+        this.sesionService.iniciarContador(); // iniciar el contador de sesion luego del login
+
+        this.router.navigate(['/publicaciones']);
         this.cargando = false;
-      }, 
+      },
       error: (error) => {
         console.error('Error en login:', error);
         

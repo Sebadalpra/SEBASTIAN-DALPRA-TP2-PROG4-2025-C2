@@ -51,7 +51,7 @@ export class AuthService {
         };
 
         // token con la firma, clave secreta y tiempo del token valido
-        const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '1m' });
+        const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '2m' });
 
         return { token : token};
     }

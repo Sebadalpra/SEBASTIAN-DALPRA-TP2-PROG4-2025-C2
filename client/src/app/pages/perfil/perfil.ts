@@ -29,6 +29,7 @@ export class Perfil implements OnInit {
     this.api.getDataConCookie('auth/data/cookie').subscribe({
       next: (datos: any) => {
         const username = datos.user; // 1. obtener el username solamente
+        console.log("user: ", username);
         
         // 2. obtener todos los datos del usuario
         this.api.getData(`usuarios/${username}`).subscribe({
@@ -53,8 +54,7 @@ export class Perfil implements OnInit {
     this.api.getData('publicaciones').subscribe({
       next: (publicaciones: any) => {
         // filtrar las publicaciones del usuario y tomar las últimas 3
-        this.publicaciones = publicaciones
-          .filter((pub: any) => pub.username === username)
+        this.publicaciones = publicaciones.filter((pub: any) => pub.username === username)
           .sort((a: any, b: any) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
           .slice(0, 3);
         this.cargando = false;

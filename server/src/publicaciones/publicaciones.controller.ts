@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
@@ -7,6 +7,7 @@ import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
 import { multerConfig } from 'src/config/multer.config';
 import { verify } from 'jsonwebtoken';
 import { CreateComentarioDto } from './dto/create-comentario.dto';
+import { JwtCookieGuard } from 'src/guards/jwt-cookie/jwt-cookie.guard';
 
 @Controller('publicaciones')
 export class PublicacionesController {
@@ -14,27 +15,17 @@ export class PublicacionesController {
 
   @Post()
   @UseInterceptors(FileInterceptor('imagen', multerConfig))
+  @UseGuards(JwtCookieGuard)
   create(
     @Body('titulo') titulo: string,
     @Body('mensaje') mensaje: string,
     @UploadedFile() file: Express.Multer.File,
     @Req() req: any
   ) {
-
-    // leer el token de la cookie
-    const token = req.cookies?.token;
-    if (!token) {
-      throw new UnauthorizedException('No autenticado');
-    }
     
     // ----------
-    let username = '';
-    try {
-        const payload: any = verify(token, process.env.JWT_SECRET!); // verify es para verificar y decodificar el token
-        username = payload.user;
-    } catch (e) {
-        throw new UnauthorizedException('Token inválido');
-    }
+    let username = (req as any).user.user; // obtener el nombre de usuario del payload del token
+
     const publicacionConImagen = {
       titulo,
       mensaje,
@@ -61,47 +52,26 @@ export class PublicacionesController {
   }
 
   @Post(':id/like')
+  // usar directamente yun guard en vez de verificar la cookie manualmente
+  @UseGuards(JwtCookieGuard) 
+
   async like(@Param('id') id: string, @Req() req: any) {
-    const token = req.cookies?.token;
-    if (!token) throw new UnauthorizedException('No autenticado');
-    let username = '';
-    try {
-      const payload: any = verify(token, process.env.JWT_SECRET!);
-      username = payload.user; // obtener el nombre de usuario del token
-    } catch (e) {
-      throw new UnauthorizedException('Token inválido');
-    }
+    const username = (req as any).user.user;
     return this.publicacionesService.addLike(id, username);
   }
 
   @Post(':id/unlike')
+  @UseGuards(JwtCookieGuard)
+
   async unlike(@Param('id') id: string, @Req() req: any) {
-    const token = req.cookies?.token;
-    if (!token) throw new UnauthorizedException('No autenticado');
-    let username = '';
-    try {
-      const payload: any = verify(token, process.env.JWT_SECRET!);
-      username = payload.user; 
-    } catch (e) {
-      throw new UnauthorizedException('Token inválido');
-    }
+    const username = (req as any).user.user;
     return this.publicacionesService.removeLike(id, username);
   }
 
   @Post(':id/comentarios')
+  @UseGuards(JwtCookieGuard)
   async comentar(@Param('id') id: string, @Body() comentarioDto: CreateComentarioDto, @Req() req: any) {
-    console.log('comentario recibido:', comentarioDto);
-
-    const token = req.cookies?.token;
-    if (!token) throw new UnauthorizedException('No autenticado');
-    let username = '';
-    try {
-      const payload: any = verify(token, process.env.JWT_SECRET!);
-      username = payload.user;
-    } catch (e) {
-      throw new UnauthorizedException('Token inválido');
-    }
-    // usar el usarname obtenido desde el token y en el dto q sea campo opcional
+    const username = (req as any).user.user;
     comentarioDto.username = username;
     return this.publicacionesService.crearComentario(id, comentarioDto);
   }
