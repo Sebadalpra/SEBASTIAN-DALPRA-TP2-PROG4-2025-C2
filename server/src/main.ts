@@ -19,7 +19,9 @@ async function bootstrap() {
 
   // cors para conectar el frontend con el backend y permitir cookies
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://sebastian-dalpra-tp-2-prog-4-2025-c-taupe.vercel.app/'], // Reemplazá con tu URL de Vercel
+    origin: [
+      'http://localhost:4200', 'https://sebastian-dalpra-tp-2-prog-4-2025-c-taupe.vercel.app'
+    ],
     credentials: true, // permite enviar y recibir cookies
   });
 
