@@ -10,7 +10,7 @@ export class SesionService {
   private api = inject(Api);
   private router = inject(Router);
   
-  private tiempoSesion = 2 * 60 * 1000; // 2 minutos en milisegundos
+  // private tiempoSesion = 2 * 60 * 1000; // 2 minutos de sesion
   private tiempoAdvertencia = 1 * 60 * 1000; // avisar cuando quede 1 minuto
 
   private temporizador: any;

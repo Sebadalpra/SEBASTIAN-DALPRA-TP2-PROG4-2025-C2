@@ -12,7 +12,7 @@ export class Api {
   local = 'http://localhost:3000';
   render = 'https://sebastian-dalpra-tp2-prog4-2025-c2-1.onrender.com';
   
-  private baseUrl = this.local;
+  private baseUrl = this.render; // Cambiar a render para producción
 
   postData(endpoint: string, data: any) {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);

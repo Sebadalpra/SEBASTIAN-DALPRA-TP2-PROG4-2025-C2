@@ -17,9 +17,9 @@ async function bootstrap() {
     }),
   );
 
-  // cors para conectar el 4200 con el 3000 y permitir cookies
+  // cors para conectar el frontend con el backend y permitir cookies
   app.enableCors({
-    origin: 'http://localhost:4200', 
+    origin: ['http://localhost:4200', 'https://sebastian-dalpra-tp-2-prog-4-2025-c-taupe.vercel.app/'], // Reemplazá con tu URL de Vercel
     credentials: true, // permite enviar y recibir cookies
   });
 
