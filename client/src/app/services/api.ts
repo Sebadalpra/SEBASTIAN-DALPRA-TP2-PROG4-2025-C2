@@ -12,10 +12,7 @@ export class Api {
   local = 'http://localhost:3000';
   render = 'https://sebastian-dalpra-tp2-prog4-2025-c2-1.onrender.com';
   
-  // localhost usa backend local, Vercel usa Render
-  private baseUrl = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? this.local
-    : this.render;
+  private baseUrl = this.render; // cambiar a this.render para producción
 
   postData(endpoint: string, data: any) {
     return this.http.post(`${this.baseUrl}/${endpoint}`, data);

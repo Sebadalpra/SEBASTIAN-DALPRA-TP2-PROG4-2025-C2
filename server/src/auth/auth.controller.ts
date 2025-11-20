@@ -54,9 +54,9 @@ export class AuthController {
     const token = await this.authService.LoginCookie(credencialesDto);
     response.cookie('token', token, {
       httpOnly: true,
-      sameSite: 'strict', 
-      //secure: false , // en desarrollo (http) en producción debe cambiar a true (https)
-      expires: new Date(Date.now() + 2 * 60 * 1000) // el navegador borra la cookie en 2 minutos
+      sameSite: 'none', // cambiar a 'none' para producción
+      secure: true, // cambiar a true para producción
+      expires: new Date(Date.now() + 2 * 60 * 1000)
     }); 
     response.json({ message: "Logueado con cookie" });
 
@@ -77,7 +77,8 @@ export class AuthController {
     
     response.cookie('token', nuevoToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none', // cambiar a 'none' para producción
+      secure: true, // cambiar a true para producción
       expires: new Date(Date.now() + 2 * 60 * 1000)
     });
     
