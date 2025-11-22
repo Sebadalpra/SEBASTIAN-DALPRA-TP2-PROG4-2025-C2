@@ -36,7 +36,7 @@
 		<div class="comentarios mt-3">
 			<h6 class="fw-bold">Comentarios ({{ publicacion.comentarios?.length || 0 }})</h6>
 			
-			@for (comentario of comentariosVisibles; track comentario._id) {
+			@for (comentario of comentariosVisibles(); track comentario._id) {
 				<div class="container-comentario">
 					<!-- Modo lectura -->
 					@if (comentarioEditando !== comentario._id) {
@@ -50,6 +50,7 @@
 								}
 							</div>
 
+							<!-- btn para editar a los usuarios dueños de sus comentarios -->
 							@if (esDuenioComentario(comentario)) {
 								<button class="btn btn-sm btn-outline-primary" (click)="editarComentario(comentario)">
 									<i class="bi bi-pencil"></i>
@@ -79,7 +80,7 @@
 			}
 
 			<!-- Botones de paginación -->
-			@if (hayMasComentarios) {
+			@if (hayMasComentarios()) {
 				<button class="btn btn-sm btn-link" (click)="verMasComentarios()">
 					Ver más comentarios...
 				</button>

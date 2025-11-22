@@ -96,7 +96,7 @@ export class Publicacion {
     this.api.editarComentario(this.publicacion._id, comentarioId, this.textoEditado).subscribe({
       next: (res: any) => {
         this.publicacion.comentarios = res.comentarios;
-        this.cancelarEdicion();
+        this.cancelarEdicion(); // para volver al estado normal del input 
       },
       error: (err) => {
         console.error('Error al editar comentario:', err);
@@ -114,19 +114,24 @@ export class Publicacion {
     this.mostrarTodos = false;
   }
 
-  // obtener comentarios visibles
-  get comentariosVisibles() {
+  // obtener comentarios visibles (ordenados por más recientes primero)
+  comentariosVisibles() {
+    // ordenarlos por fecha (más recientes primero)
+    const comentariosOrdenados = [...(this.publicacion.comentarios || [])].sort((a, b) => 
+      new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+    );
+
     if (this.mostrarTodos) {
-      return this.publicacion.comentarios;
+      return comentariosOrdenados;
     }
     // sino mostrar solo hasta 5 comentarios
-    return this.publicacion.comentarios?.slice(0, this.limite) || [];
+    return comentariosOrdenados.slice(0, this.limite);
   }
 
 
 
   // verificar si hay más comentarios para mostrar
-  get hayMasComentarios(): boolean {
+  hayMasComentarios(): boolean {
     return !this.mostrarTodos && this.publicacion.comentarios?.length > this.limite;
   }
 }
