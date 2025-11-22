@@ -30,8 +30,20 @@ export class PublicacionesService {
     return `This action updates a #${id} publicacione`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} publicacione`;
+  async remove(id: string, username: string) {
+    // 1. Buscar la publicación
+    const publicacion = await this.publicacionesModel.findById(id);
+    if (!publicacion) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    // 2. Verificar que el usuario sea el dueño de la publicación
+    if (username !== publicacion.username) {
+      throw new ForbiddenException('No tenés permisos para eliminar esta publicación');
+    }
+
+    // 3. Eliminar la publicación
+    return this.publicacionesModel.findByIdAndDelete(id);
   }
 
   // metodos relacionados a los comentarios de las publicaciones

@@ -6,10 +6,16 @@
 				<i class="bi bi-person-fill"></i>
 			</div>
 
-			<div class="ms-3">
+			<div class="ms-3 flex-grow-1">
 				<h6 class="mb-0">{{ publicacion.username }}</h6>
 				<small class="text-muted">{{ publicacion.fecha | date:'short' }}</small>
 			</div>
+
+			@if (esDuenioPublicacion()) {
+				<button class="btn btn-danger btn-sm" (click)="eliminarPublicacion()" title="Eliminar publicación">
+					<i class="bi bi-trash"></i>
+				</button>
+			}
 
 		</div>
 		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>

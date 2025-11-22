@@ -18,7 +18,7 @@ export class JwtCookieGuard implements CanActivate {
         // verificar el token usando la clave secreta
         const payload = verify(token, process.env.JWT_SECRET!);
         (request as any).user = payload; // esto permite acceder al payload en los controladores
-        console.log('✅ Guard: Token válido para usuario:', (payload as any).user);
+        console.log('Guard: Token válido para usuario:', (payload as any).user);
         // si la verificación es exitosa, obtener el payload y permitir el acceso
         return true;
       } catch (error) {

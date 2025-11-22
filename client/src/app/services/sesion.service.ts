@@ -13,7 +13,7 @@ export class SesionService {
   // private tiempoSesion = 2 * 60 * 1000; // 2 minutos de sesion
   private tiempoAdvertencia = 1 * 60 * 1000; // avisar cuando quede 1 minuto
 
-  private temporizador: any;
+  private temporizador: any = null;
   private modalMostrado = false;
 
   iniciarContador() {
@@ -43,13 +43,13 @@ export class SesionService {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Extender',
-      cancelButtonText: 'Cerrar sesión',
+      cancelButtonText: 'Continuar sin extender',
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
         this.refrescarToken();
       } else {
-        this.cerrarSesion();
+        this.esperarExpiracion();
       }
     });
   }
@@ -72,8 +72,23 @@ export class SesionService {
     });
   }
 
+  // esperar el minuto restante cuando el usuario cancela
+  private esperarExpiracion() {
+    this.temporizador = setTimeout(() => {
+      this.cerrarSesion();
+    }, 1 * 60 * 1000); // 1 min mas
+  }
+
   private cerrarSesion() {
     this.detenerContador();
-    this.router.navigate(['/login']);
+    Swal.fire({
+      title: 'Sesión finalizada',
+      text: 'Tu sesión ha finalizado. Serás redirigido al inicio de sesión.',
+      icon: 'info',
+      timer: 3000,
+      showConfirmButton: false
+    }).then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }

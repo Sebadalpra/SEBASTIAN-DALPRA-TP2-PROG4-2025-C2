@@ -46,10 +46,16 @@ export class PublicacionesController {
     return this.publicacionesService.findOne(id);
   }
 
+  // eliminar publicacion solo si sos el dueño
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.publicacionesService.remove(+id);
+  @UseGuards(JwtCookieGuard)
+  remove(@Param('id') id: string, @Req() req: any) {
+    const username = (req as any).user.user;
+    return this.publicacionesService.remove(id, username);
   }
+
+
+  // likes o quitar likes:
 
   @Post(':id/like')
   // usar directamente yun guard en vez de verificar la cookie manualmente
@@ -67,6 +73,9 @@ export class PublicacionesController {
     const username = (req as any).user.user;
     return this.publicacionesService.removeLike(id, username);
   }
+
+
+  // comentarios:
 
   @Post(':id/comentarios')
   @UseGuards(JwtCookieGuard)

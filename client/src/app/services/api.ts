@@ -59,8 +59,12 @@ export class Api {
     return this.http.post(`${this.baseUrl}/publicaciones/${id}/comentarios`, { texto }, { withCredentials: true });
   }
 
-  editarComentario(publicacionId: string, comentarioId: string, texto: string) {
-    return this.http.put(`${this.baseUrl}/publicaciones/${publicacionId}/comentarios/${comentarioId}`, { texto }, { withCredentials: true });
+  editarComentario(publicacionId: string, comentarioId: string, nuevoTexto: string) {
+    return this.http.put(`${this.baseUrl}/publicaciones/${publicacionId}/comentarios/${comentarioId}`, { texto: nuevoTexto }, { withCredentials: true });
+  }
+
+  eliminarPublicacion(publicacionId: string) {
+    return this.http.delete(`${this.baseUrl}/publicaciones/${publicacionId}`, { withCredentials: true });
   }
 
 }

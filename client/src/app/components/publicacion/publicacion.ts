@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-publicacion',
@@ -72,7 +73,14 @@ export class Publicacion {
     return this.api.buildRutaImagen(filename);
   }
 
-  //Validaciones previas:
+
+    //Validaciones previas:
+    // verificar si el usuario actual es dueño de la publicación
+  esDuenioPublicacion(): boolean {
+    return this.publicacion.username === this.usuarioActual;
+  }
+
+  // comentarios : 
   // 1.verificar si el usuario actual es dueño del comentario
   esDuenioComentario(comentario: any): boolean {
     return comentario.username === this.usuarioActual;
@@ -87,6 +95,36 @@ export class Publicacion {
     this.comentarioEditando = null;
     this.textoEditado = '';
   }
+
+
+  async eliminarPublicacion() {
+    const result = Swal.fire({
+      title: '¿Estás seguro de que querés eliminar esta publicación?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if ((await result).isConfirmed) {
+      this.api.eliminarPublicacion(this.publicacion._id).subscribe({
+        next: () => {
+          // Emitir evento o recargar la lista
+          window.location.reload();
+        },
+        error: (err) => {
+          console.error('Error al eliminar publicación:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo eliminar la publicación.',
+          });
+        }
+      });
+    }
+  }
+
 
 
   // ------- Guardar comentario editado
