@@ -10,6 +10,9 @@ export class Comentario {
 
   @Prop({ default: new Date() })
   fecha: Date;
+
+  @Prop({ default: false })
+  modificado: boolean;
 }
 
 export const ComentarioSchema = SchemaFactory.createForClass(Comentario);

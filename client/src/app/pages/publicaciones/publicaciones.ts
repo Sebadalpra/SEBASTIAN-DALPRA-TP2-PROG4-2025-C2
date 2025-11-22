@@ -19,6 +19,7 @@ export class Publicaciones {
   });
 
   apiService = inject(Api)
+  usuarioActual: string = ''; // username del usuario logueado
 
   file: File | null = null;
 
@@ -101,6 +102,18 @@ export class Publicaciones {
 
   ngOnInit() {
     this.cargarPublicaciones();
+    this.cargarUsuarioActual();
+  }
+
+  cargarUsuarioActual() {
+    this.apiService.getDataConCookie('auth/data/cookie').subscribe({
+      next: (datos: any) => {
+        this.usuarioActual = datos.user;
+      },
+      error: (err) => {
+        console.error('Error al obtener usuario:', err);
+      }
+    });
   }
 
 

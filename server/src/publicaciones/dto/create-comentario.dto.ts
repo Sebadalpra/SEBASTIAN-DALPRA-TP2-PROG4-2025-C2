@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class CreateComentarioDto {
 @IsOptional() // opcional porque se asigna desde el token
@@ -7,4 +7,8 @@ export class CreateComentarioDto {
 
   @IsString()
   texto: string;
+
+  @IsOptional()
+  @IsBoolean()
+  modificado?: boolean;
 }

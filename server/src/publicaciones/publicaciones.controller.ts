@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, UnauthorizedException, UseGuards, Put } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PublicacionesService } from './publicaciones.service';
@@ -76,8 +76,17 @@ export class PublicacionesController {
     return this.publicacionesService.crearComentario(id, comentarioDto);
   }
 
-
-
-
+  // editar comentario (solo si sos el dueño)
+  @Put(':publicacionId/comentarios/:comentarioId')
+  @UseGuards(JwtCookieGuard)
+  async editarComentario(
+    @Param('publicacionId') publicacionId: string,
+    @Param('comentarioId') comentarioId: string,
+    @Body('texto') texto: string,
+    @Req() req: any
+  ) {
+    const username = (req as any).user.user;
+    return this.publicacionesService.editarComentario(publicacionId, comentarioId, texto, username);
+  }
 
 }

@@ -1,13 +1,16 @@
 <div class="card shadow-sm mb-3">
 	<div class="card-body">
+
 		<div class="d-flex align-items-center mb-3">
 			<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
 				<i class="bi bi-person-fill"></i>
 			</div>
+
 			<div class="ms-3">
 				<h6 class="mb-0">{{ publicacion.username }}</h6>
-				<small class="text-muted">Hace un momento</small>
+				<small class="text-muted">{{ publicacion.fecha | date:'short' }}</small>
 			</div>
+
 		</div>
 		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
 		<p class="card-text">{{ publicacion.mensaje }}</p>
@@ -17,21 +20,76 @@
 				</div>
 			}
 		<hr class="my-3">
+
 		<div class="d-flex gap-2 mb-2">
+
 			<button class="btn btn-outline-danger btn-sm" (click)="darLike()" [disabled]="cargandoLike">
 				<i class="bi bi-heart me-1"></i>Me gusta ({{ publicacion.likes?.length || 0 }})
 			</button>
+
 			<button class="btn btn-outline-secondary btn-sm" (click)="quitarLike()" [disabled]="cargandoLike">
 				<i class="bi bi-x-circle me-1"></i>Quitar Like
 			</button>
+
 		</div>
+
 		<div class="comentarios mt-3">
-			<h6 class="fw-bold">Comentarios</h6>
-			@for (c of publicacion.comentarios; track $index) {
-				<div class="mb-1">
-					<span class="fw-semibold">{{ c.username }}:</span> {{ c.texto }}
+			<h6 class="fw-bold">Comentarios ({{ publicacion.comentarios?.length || 0 }})</h6>
+			
+			@for (comentario of comentariosVisibles; track comentario._id) {
+				<div class="container-comentario">
+					<!-- Modo lectura -->
+					@if (comentarioEditando !== comentario._id) {
+						<div class="d-flex justify-content-between align-items-start">
+							<div>
+								<!-- simplemente mostrarlo -->
+								<span class="fw-semibold">{{ comentario.username }}:</span> {{ comentario.texto }}
+
+								@if (comentario.modificado) {
+									<span class="modificado">(Modificado)</span>
+								}
+							</div>
+
+							@if (esDuenioComentario(comentario)) {
+								<button class="btn btn-sm btn-outline-primary" (click)="editarComentario(comentario)">
+									<i class="bi bi-pencil"></i>
+								</button>
+							}
+						</div>
+					}
+					
+					<!-- Modo edición -->
+					@if (comentarioEditando === comentario._id) {
+						<div>
+							<input [(ngModel)]="textoEditado" class="form-control form-control-sm mb-2" />
+							<div class="d-flex gap-2">
+
+								<button class="btn btn-sm btn-success" (click)="guardarEdicion(comentario._id)">
+									<i class="bi bi-check"></i> Guardar
+								</button>
+
+								<button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">
+									<i class="bi bi-x"></i> Cancelar
+								</button>
+								
+							</div>
+						</div>
+					}
 				</div>
 			}
+
+			<!-- Botones de paginación -->
+			@if (hayMasComentarios) {
+				<button class="btn btn-sm btn-link" (click)="verMasComentarios()">
+					Ver más comentarios...
+				</button>
+			}
+			@if (mostrarTodos && publicacion.comentarios?.length > limite) {
+				<button class="btn btn-sm btn-link" (click)="verMenosComentarios()">
+					Ver menos
+				</button>
+			}
+
 			<div class="input-group mt-2">
 				<input [(ngModel)]="nuevoComentario" class="form-control form-control-sm" placeholder="Escribe un comentario..." />
 				<button class="btn btn-primary btn-sm" (click)="comentar()" [disabled]="cargandoComentario">Comentar</button>

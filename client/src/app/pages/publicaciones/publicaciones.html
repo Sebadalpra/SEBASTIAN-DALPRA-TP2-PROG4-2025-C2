@@ -46,7 +46,7 @@
         </h4>
         @for (publicacion of this.publicaciones; track $index) {
             <!-- por cada publicacion crear un componente publicacion: -->
-            <app-publicacion [publicacion]="publicacion"></app-publicacion> 
+            <app-publicacion [publicacion]="publicacion" [usuarioActual]="usuarioActual"></app-publicacion> 
         }
     </div>
 </div>

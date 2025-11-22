@@ -12,11 +12,22 @@ import { Api } from '../../services/api';
 })
 export class Publicacion {
   @Input() publicacion: any;
+  @Input() usuarioActual: string = ''; // username del usuario logueado
 
   nuevoComentario: string = '';
   
   cargandoLike = false;
   cargandoComentario = false;
+
+  // estado de edición de comentarios
+  comentarioEditando: string | null = null; // id del comentario en edición
+  textoEditado: string = '';
+
+  // paginación
+  paginaActual = 1;
+  limite = 5;
+  totalComentarios = 0;
+  mostrarTodos = false;
 
   constructor(private api: Api) {}
 
@@ -59,5 +70,63 @@ export class Publicacion {
 
   buildRutaImagen(filename: string): string {
     return this.api.buildRutaImagen(filename);
+  }
+
+  //Validaciones previas:
+  // 1.verificar si el usuario actual es dueño del comentario
+  esDuenioComentario(comentario: any): boolean {
+    return comentario.username === this.usuarioActual;
+  }
+  // 2. iniciar edicion de comentario
+  editarComentario(comentario: any) {
+    this.comentarioEditando = comentario._id;
+    this.textoEditado = comentario.texto;
+  }
+  // 3. cancelar edicion
+  cancelarEdicion() {
+    this.comentarioEditando = null;
+    this.textoEditado = '';
+  }
+
+
+  // ------- Guardar comentario editado
+  guardarEdicion(comentarioId: string) {
+    if (!this.textoEditado.trim()) return;
+
+    this.api.editarComentario(this.publicacion._id, comentarioId, this.textoEditado).subscribe({
+      next: (res: any) => {
+        this.publicacion.comentarios = res.comentarios;
+        this.cancelarEdicion();
+      },
+      error: (err) => {
+        console.error('Error al editar comentario:', err);
+        alert('No se pudo editar el comentario');
+      }
+    });
+  }
+
+  // paginacion de comentarios
+
+  verMasComentarios() {
+    this.mostrarTodos = true;
+  }
+  verMenosComentarios() {
+    this.mostrarTodos = false;
+  }
+
+  // obtener comentarios visibles
+  get comentariosVisibles() {
+    if (this.mostrarTodos) {
+      return this.publicacion.comentarios;
+    }
+    // sino mostrar solo hasta 5 comentarios
+    return this.publicacion.comentarios?.slice(0, this.limite) || [];
+  }
+
+
+
+  // verificar si hay más comentarios para mostrar
+  get hayMasComentarios(): boolean {
+    return !this.mostrarTodos && this.publicacion.comentarios?.length > this.limite;
   }
 }
