@@ -23,6 +23,12 @@ export class Publicaciones {
 
   file: File | null = null;
 
+  // ordenamiento y paginación
+  ordenActual: 'fecha' | 'likes' = 'fecha';
+  paginaActual = 1;
+  limite = 5; // publicaciones por página
+  totalPublicaciones = 0;
+
   seleccionarArchivo( archivo: any ){
       const file_seleccionado = archivo.target.files[0];
 
@@ -63,6 +69,7 @@ export class Publicaciones {
 
         this.publicacionesGroup.reset();
         this.file = null;
+        this.paginaActual = 1; // volver a la primera página
         
         this.cargarPublicaciones();
       },
@@ -90,6 +97,8 @@ export class Publicaciones {
     this.apiService.getData('publicaciones').subscribe({
       next: (data: any) => {
         this.publicaciones = data;
+        this.totalPublicaciones = data.length;
+        this.ordenarPublicaciones();
         console.log("Publicaciones cargadas:", this.publicaciones);
       },
       error: (error) => {
@@ -99,6 +108,65 @@ export class Publicaciones {
   }
 
   publicaciones: any[] = [];
+
+
+  // ----- ordenar y paginar: ----
+
+  // ordenar publicaciones según el criterio seleccionado
+  ordenarPublicaciones() {
+    if (this.ordenActual === 'fecha') {
+      this.publicaciones.sort((a, b) => {
+        return new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime(); // más recientes primero
+      });
+    } else {
+      this.publicaciones.sort((a, b) => {
+        return (b.likes?.length || 0) - (a.likes?.length || 0); // más likes primero
+      });
+    }
+  }
+
+  // cambiar el criterio de ordenamiento
+  cambiarOrden(orden: 'fecha' | 'likes') {
+    this.ordenActual = orden;
+    this.paginaActual = 1; // resetear a la primera página
+    this.ordenarPublicaciones();
+  }
+
+  
+  // mostrarlas paginando con el for 
+  publicacionesPaginadas() {
+    const inicio = (this.paginaActual - 1) * this.limite;
+    const fin = inicio + this.limite;
+    return this.publicaciones.slice(inicio, fin);
+  }
+
+  // navegar entre páginas
+  cambiarPagina(direccion: 'anterior' | 'siguiente') {
+    if (direccion === 'anterior' && this.paginaActual > 1) {
+      this.paginaActual--;
+    } else if (direccion === 'siguiente' && this.paginaActual < this.totalPaginas()) {
+      this.paginaActual++;
+    }
+  }
+
+  // calcular el total de páginas
+  totalPaginas(): number {
+    return Math.ceil(this.totalPublicaciones / this.limite) // ceil redondea hacia arriba
+  }
+
+  // verificar si hay página anterior
+  hayPaginaAnterior(): boolean {
+    return this.paginaActual > 1;
+  }
+
+  // verificar si hay página siguiente
+  hayPaginaSiguiente(): boolean {
+    return this.paginaActual < this.totalPaginas();
+  }
+
+
+
+
 
   ngOnInit() {
     this.cargarPublicaciones();
