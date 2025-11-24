@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { rolGuard } from './guards/rol-guard';
+import { estaLogueadoGuardGuard } from './guards/esta-logueado-guard-guard';
 
 export const routes: Routes = [
     {
@@ -6,11 +8,17 @@ export const routes: Routes = [
     },
     {
         path: 'perfil',
-        loadComponent: () => import('./pages/perfil/perfil').then(m => m.Perfil)
+        loadComponent: () => import('./pages/perfil/perfil').then(m => m.Perfil),
+        canActivate: [estaLogueadoGuardGuard]
     },
     {
         path: 'publicaciones',
         loadComponent: () => import('./pages/publicaciones/publicaciones').then(m => m.Publicaciones)
+    },
+    {
+        path: 'dashboard',
+        loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+        canActivate: [rolGuard]
     },
     { path: 'login',
         loadComponent: () => import('./pages/login/login').then(m => m.Login)

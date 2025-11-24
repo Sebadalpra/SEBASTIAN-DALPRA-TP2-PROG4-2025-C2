@@ -32,7 +32,7 @@ export class AuthService {
         // payload es la data que va a llevar el token
         const payload: { user: string; rol: string } = {
             user: username,
-            rol: rol, // 'user' o 'admin'
+            rol: rol, // user o admin
         };
 
         // token con la firma, clave secreta y tiempo del token valido

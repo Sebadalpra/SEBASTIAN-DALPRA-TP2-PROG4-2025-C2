@@ -47,7 +47,7 @@ export class AuthController {
       secure: true, // cambiar a true para producción
       expires: new Date(Date.now() + 2 * 60 * 1000)
     }); 
-    response.json({ message: "Logueado con cookie", rol: tokenData.rol });
+    response.json({ message: "Logueo exitoso con cookie", rol: tokenData.rol, usuario: credencialesDto.username });
 
   }
 

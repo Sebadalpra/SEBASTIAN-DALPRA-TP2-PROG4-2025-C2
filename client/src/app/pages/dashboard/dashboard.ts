@@ -1,11 +1,67 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Api } from '../../services/api';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  private api = inject(Api);
+  private router = inject(Router);
 
+  usuarios: any[] = [];
+  cargando = true;
+  rolUsuario = '';
+
+  ngOnInit() {
+    this.verificarAdmin();
+    this.cargarUsuarios();
+  }
+
+  verificarAdmin() {
+    this.api.getDataConCookie('auth/data/cookie').subscribe({
+      next: (datos: any) => {
+        this.rolUsuario = datos.rol;
+        if (datos.rol !== 'admin') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Acceso denegado',
+            text: 'Solo administradores pueden acceder a esta página',
+          }).then(() => {
+            this.router.navigate(['/publicaciones']);
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar usuario:', err);
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  cargarUsuarios() {
+    this.api.getDataConCookie('usuarios').subscribe({
+      next: (data: any) => {
+        this.usuarios = data;
+        this.cargando = false;
+        console.log('Usuarios cargados:', this.usuarios);
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
+        this.cargando = false;
+        if (error.status === 403) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Acceso denegado',
+            text: 'No tenés permisos para ver el listado de usuarios',
+          });
+        }
+      }
+    });
+  }
 }
