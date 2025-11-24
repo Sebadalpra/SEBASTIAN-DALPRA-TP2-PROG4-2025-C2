@@ -16,78 +16,39 @@ export class AuthService {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(usuario.password, saltRounds);
         
-        // Crear usuario con la contraseña hasheada
+        // Crear usuario con la contraseña hasheada y rol 'user' por defecto
         const usuarioConPasswordHash = {
             ...usuario,
-            password: hashedPassword
+            password: hashedPassword,
+            rol: 'user' // siempre 'user' al registrarse
         };
 
         const nuevoUsuario = await this.usuariosService.create(usuarioConPasswordHash);
 
-        return this.createToken(nuevoUsuario.username, false);
+        return this.createToken(nuevoUsuario.username, nuevoUsuario.rol);
     }
 
-    async login(credencialesDto: CredencialesDto) {
-        const usuario = await this.usuariosService.findOne(credencialesDto.username);
-
-        if (!usuario) {
-            throw new UnauthorizedException('Credenciales inválidas');
-        }
-        // comparar la contraseña usando bcrypt
-        const passwordValida = await bcrypt.compare(credencialesDto.password, usuario.password);
-        
-        if (!passwordValida) {
-            throw new UnauthorizedException('Credenciales inválidas');
-        }
-
-        return this.createToken(credencialesDto.username, false);
-    }
-
-    createToken(username: string, isAdmin: boolean) {
+    createToken(username: string, rol: string) {
         // payload es la data que va a llevar el token
-        const payload: { user: string; admin: boolean } = {
+        const payload: { user: string; rol: string } = {
             user: username,
-            admin: isAdmin,
+            rol: rol, // 'user' o 'admin'
         };
 
         // token con la firma, clave secreta y tiempo del token valido
         const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '2m' });
 
-        return { token : token};
+        return { token : token, rol: rol };
     }
-
-    // verificar devuelve el payload del token si es válido
-    verificar(authHeader: string) {
-        console.log(authHeader);
-        if (!authHeader) throw new BadRequestException('no hay encabezado de autorización');
-
-        const [tipo, token] = authHeader.split(' ');
-
-        if( tipo !== 'Bearer' || !token) throw new BadRequestException('encabezado de autorización invalido');
-
-        try {
-            const tokenValidado = verify(token, process.env.JWT_SECRET!);
-            return tokenValidado;
-
-        }
-        catch (error) {
-            if (error instanceof TokenExpiredError) {
-                return "Token expirado";
-            } 
-            if (error instanceof JsonWebTokenError) {
-                return "Firma falsa o token manipulado";
-            }
-            return "Error en la verificación del token";
-        }
-
-
-    }
-
 
     // ---- manejar tokens con cookies----
-    guardarEnCookie(username: string) {
-        const tokenData = this.createToken(username, false);
-        return tokenData.token;
+    async guardarEnCookie(username: string) {
+        const usuario = await this.usuariosService.findOne(username);
+        if (!usuario) {
+            throw new UnauthorizedException('Usuario no encontrado');
+        }
+        const tokenData = this.createToken(username, usuario.rol);
+        return tokenData;
     }
 
     verificarCookie(token: string) {

@@ -28,6 +28,9 @@ export class Usuario {
     @Prop({ required: false })
     fotoPerfil: string;
 
+    @Prop({ default: 'user', enum: ['user', 'admin'] })
+    rol: string;
+
     @Prop( {default: new Date()})
     fecha_creado: Date;
 }

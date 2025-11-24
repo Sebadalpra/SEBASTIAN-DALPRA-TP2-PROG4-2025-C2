@@ -11,11 +11,19 @@
 				<small class="text-muted">{{ publicacion.fecha | date:'short' }}</small>
 			</div>
 
-			@if (esDuenioPublicacion()) {
-				<button class="btn btn-danger btn-sm" (click)="eliminarPublicacion()" title="Eliminar publicación">
-					<i class="bi bi-trash"></i>
-				</button>
-			}
+			<div class="d-flex gap-2">
+				@if (esDuenioPublicacion()) {
+					<button class="btn btn-danger btn-sm" (click)="eliminarPublicacion()">
+						<i class="bi bi-trash"></i> Eliminar
+					</button>
+				}
+
+				@if (esAdmin()) {
+					<button class="btn btn-warning btn-sm" (click)="darDeBajaPublicacion()">
+						<i class="bi bi-ban"></i> Dar de baja
+					</button>
+				}
+			</div>
 
 		</div>
 		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>

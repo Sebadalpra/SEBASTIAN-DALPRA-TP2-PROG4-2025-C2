@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 export class Publicacion {
   @Input() publicacion: any;
   @Input() usuarioActual: string = ''; // username del usuario logueado
+  @Input() rolUsuario: string = 'user'; // rol del usuario ('user' o 'admin')
 
   nuevoComentario: string = '';
   
@@ -80,6 +81,11 @@ export class Publicacion {
     return this.publicacion.username === this.usuarioActual;
   }
 
+  // verificar si el usuario es admin
+  esAdmin(): boolean {
+    return this.rolUsuario === 'admin'; // esto 
+  }
+
   // comentarios : 
   // 1.verificar si el usuario actual es dueño del comentario
   esDuenioComentario(comentario: any): boolean {
@@ -97,8 +103,9 @@ export class Publicacion {
   }
 
 
+  // 1. eliminar publicaciones del propio user
   async eliminarPublicacion() {
-    const result = Swal.fire({
+    const result = await Swal.fire({
       title: '¿Estás seguro de que querés eliminar esta publicación?',
       text: "Esta acción no se puede deshacer.",
       icon: 'warning',
@@ -107,7 +114,7 @@ export class Publicacion {
       cancelButtonText: 'Cancelar',
     });
 
-    if ((await result).isConfirmed) {
+    if (result.isConfirmed) {
       this.api.eliminarPublicacion(this.publicacion._id).subscribe({
         next: () => {
           // Emitir evento o recargar la lista
@@ -119,6 +126,43 @@ export class Publicacion {
             icon: 'error',
             title: 'Error',
             text: 'No se pudo eliminar la publicación.',
+          });
+        }
+      });
+    }
+  }
+
+  // 2. dar de baja publicación solo si sos admin
+  async darDeBajaPublicacion() {
+    const result = await Swal.fire({
+      title: '¿Dar de baja esta publicación?',
+      text: 'La publicación y sus comentarios dejarán de estar disponibles',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, dar de baja',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33'
+    });
+
+    if (result.isConfirmed) {
+      this.api.darDeBajaPublicacion(this.publicacion._id).subscribe({
+        next: () => {
+          Swal.fire({
+            title: 'Publicación dada de baja',
+            text: 'La publicación ya no estará disponible',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.reload(); // recargar par reflejar cambios
+          });
+        },
+        error: (err) => {
+          console.error('Error al dar de baja:', err);
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo dar de baja la publicación',
+            icon: 'error'
           });
         }
       });

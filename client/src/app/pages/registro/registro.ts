@@ -4,6 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { min } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Api } from '../../services/api';
+import { SesionService } from '../../services/sesion.service';
 
 @Component({
   selector: 'app-registro',
@@ -150,7 +151,7 @@ export class Registro {
       formData.append('fotoPerfil', this.file);
     }
 
-
+    const sesionService = inject(SesionService)
 
     this.apiService.postData('auth/registro', formData).subscribe({
       next: () => {
@@ -161,8 +162,21 @@ export class Registro {
           text: 'Registrado correctamente.',
         });
         
-        this.router.navigate(['/perfil']);
-        return "Registro exitoso";
+        // loguearse automaticamente tras registro
+        this.apiService.postCookie('auth/login/cookie', {
+          username: this.userName?.value || '',
+          password: this.password?.value || ''
+        }).subscribe({
+          next: (response: any) => {
+            console.log('login exitoso tras registro:', response);
+            this.router.navigate(['/publicaciones']);
+            sesionService.iniciarContador();
+          },
+          error: (error) => {
+            console.error('Error en login tras registro:', error);
+            this.router.navigate(['/login']);
+          }
+        });
       },
       // manejar error por si falta algún campo
       error: (error) => {

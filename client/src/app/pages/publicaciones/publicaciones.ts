@@ -20,6 +20,7 @@ export class Publicaciones {
 
   apiService = inject(Api)
   usuarioActual: string = ''; // username del usuario logueado
+  rolUsuario: string = 'user'; // rol del usuario ('user' o 'admin')
 
   file: File | null = null;
 
@@ -174,9 +175,11 @@ export class Publicaciones {
   }
 
   cargarUsuarioActual() {
+    // si el usuario esta logueado obtener su nombre de usuario y rol
     this.apiService.getDataConCookie('auth/data/cookie').subscribe({
       next: (datos: any) => {
         this.usuarioActual = datos.user;
+        this.rolUsuario = datos.rol || 'user'; // obtener el rol del token
       },
       error: (err) => {
         console.error('Error al obtener usuario:', err);

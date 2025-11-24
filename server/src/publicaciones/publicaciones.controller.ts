@@ -54,6 +54,14 @@ export class PublicacionesController {
     return this.publicacionesService.remove(id, username);
   }
 
+  // dar de baja publicacion (solo admin)
+  @Patch(':id/baja')
+  @UseGuards(JwtCookieGuard)
+  darDeBaja(@Param('id') id: string, @Req() req: any) {
+    const rol = (req as any).user.rol;
+    return this.publicacionesService.darDeBaja(id, rol);
+  }
+
 
   // likes o quitar likes:
 

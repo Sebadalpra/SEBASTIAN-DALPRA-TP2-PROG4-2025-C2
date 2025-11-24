@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { CreatePublicacionesDto } from './dto/create-publicaciones.dto';
 import { UpdatePublicacionesDto } from './dto/update-publicaciones.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,8 +18,9 @@ export class PublicacionesService {
   }
 
   findAll() {
-    console.log("Buscando todas las publicaciones")
-    return this.publicacionesModel.find().exec();
+    console.log("Buscando todas las publicaciones activas")
+    // Solo traer publicaciones activas
+    return this.publicacionesModel.find({ activa: true }).exec();
   }
 
   findOne(id: string) {
@@ -44,6 +45,27 @@ export class PublicacionesService {
 
     // 3. Eliminar la publicación
     return this.publicacionesModel.findByIdAndDelete(id);
+  }
+
+  // Dar de baja una publicación (solo admin)
+  async darDeBaja(id: string, rolUsuario: string) {
+    // 1. Verificar que sea admin
+    if (rolUsuario != 'admin') {
+      throw new ForbiddenException('Solo los admin pueden dar de baja una publicación');
+    }
+
+    // 2. Buscar la publicación
+    const publicacion = await this.publicacionesModel.findById(id);
+    if (!publicacion) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+    else if (!publicacion.activa) {
+      throw new BadRequestException('La publicación ya está dada de baja');
+    }
+    
+
+    // 3. Marcar como inactiva
+    return this.publicacionesModel.findByIdAndUpdate(id,{ activa: false },{ new: true });
   }
 
   // metodos relacionados a los comentarios de las publicaciones

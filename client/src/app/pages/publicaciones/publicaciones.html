@@ -43,7 +43,7 @@
         <!-- Lista de publicaciones -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0">
-                <i class="bi bi-newspaper me-2"></i>Publicaciones Recientes
+                <i class="bi bi-newspaper me-2"></i>Publicaciones
             </h4>
             
             <!-- Controles de ordenamiento -->
@@ -67,7 +67,12 @@
 
         @for (publicacion of publicacionesPaginadas(); track publicacion._id) {
             <!-- por cada publicacion crear un componente publicacion: -->
-            <app-publicacion [publicacion]="publicacion" [usuarioActual]="usuarioActual"></app-publicacion> 
+             <!-- parametros que se pasan a publicacion -->
+            <app-publicacion 
+                [publicacion]="publicacion" 
+                [usuarioActual]="usuarioActual"
+                [rolUsuario]="rolUsuario">
+            </app-publicacion> 
         }
 
         <!-- paginacion solo si hay mas de 1 pagina (limitada a 5) -->

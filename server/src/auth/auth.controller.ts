@@ -38,30 +38,20 @@ export class AuthController {
     return this.authService.registro(usuarioConFoto);
   }
 
-  @Post('login')
-  Login(@Body() credencialesDto: CredencialesDto) {
-    return this.authService.login(credencialesDto);
-  }
-
-
-  @Get('data')
-  traer(@Headers("Authorization") authHeader: string) {
-    return this.authService.verificar(authHeader);
-  }
-
   @Post('login/cookie')
   async LoginCookie(@Body() credencialesDto: CredencialesDto, @Res() response: Response) {
-    const token = await this.authService.LoginCookie(credencialesDto);
-    response.cookie('token', token, {
+    const tokenData = await this.authService.LoginCookie(credencialesDto);
+    response.cookie('token', tokenData.token, {
       httpOnly: true,
       sameSite: 'none', // cambiar a 'none' para producción
       secure: true, // cambiar a true para producción
       expires: new Date(Date.now() + 2 * 60 * 1000)
     }); 
-    response.json({ message: "Logueado con cookie" });
+    response.json({ message: "Logueado con cookie", rol: tokenData.rol });
 
   }
 
+  // traer los datos del token guardado en la cookie
   @Get('data/cookie')
   @UseGuards(JwtCookieGuard)
   traerCookie(@Req() request: Request) {
@@ -73,15 +63,15 @@ export class AuthController {
   @UseGuards(JwtCookieGuard)
   async refreshCookie(@Req() request: Request, @Res() response: Response) {
     const user = (request as any).user;
-    const nuevoToken = this.authService.guardarEnCookie(user.user);
+    const tokenData = await this.authService.guardarEnCookie(user.user);
     
-    response.cookie('token', nuevoToken, {
+    response.cookie('token', tokenData.token, {
       httpOnly: true,
       sameSite: 'none', // cambiar a 'none' para producción
       secure: true, // cambiar a true para producción
       expires: new Date(Date.now() + 2 * 60 * 1000)
     });
     
-    response.json({ message: 'Token refrescado' });
+    response.json({ message: 'Token refrescado', rol: tokenData.rol });
   }
 }

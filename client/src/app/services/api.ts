@@ -67,6 +67,10 @@ export class Api {
     return this.http.delete(`${this.baseUrl}/publicaciones/${publicacionId}`, { withCredentials: true });
   }
 
+  darDeBajaPublicacion(publicacionId: string) {
+    return this.http.patch(`${this.baseUrl}/publicaciones/${publicacionId}/baja`, {}, { withCredentials: true });
+  }
+
 }
 
 
