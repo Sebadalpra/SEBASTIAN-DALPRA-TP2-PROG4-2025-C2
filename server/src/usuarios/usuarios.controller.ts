@@ -31,9 +31,8 @@ export class UsuariosController {
   }
 
   @Patch(':id/alta-baja')
-  @UseGuards(JwtCookieGuard)
+  @UseGuards(JwtCookieGuard) 
   activar(@Param('id') id: string , @Req() req: any) {
-    const rol = (req as any).user.rol;
-    return this.usuariosService.altaBaja(id, rol);
+    return this.usuariosService.altaBaja(id);
   }
 }

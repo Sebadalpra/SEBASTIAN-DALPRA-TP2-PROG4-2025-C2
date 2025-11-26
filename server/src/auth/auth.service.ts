@@ -78,7 +78,7 @@ export class AuthService {
             throw new UnauthorizedException('Credenciales inválidas');
         }
         if(usuario.activo === false) {
-            throw new BadRequestException('Usuario inactivo. Contacte al administrador.');
+            throw new BadRequestException('Usuario inactivo. Contacte al administrador.'); // error 400
         }
         // si el usuario existe, comparar las contraseñas
         const passwordValida = await bcrypt.compare(credencialesDto.password, usuario.password);

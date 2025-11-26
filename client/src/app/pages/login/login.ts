@@ -57,11 +57,11 @@ export class Login {
         console.error('Error en login:', error);
         
         if (error.status === 401) {
-          this.mensajeError = 'Usuario o contraseña incorrectos';
+          this.mensajeError = error.error.message; // 'credenciales inválidas'
         } else if (error.status === 400) {
-          this.mensajeError = 'Usuario inactivo. No puede iniciar sesión.';
+          this.mensajeError = error.error.message // 'usuario inactivo'
         } else {
-          this.mensajeError = 'Error al iniciar sesión. Intentá nuevamente';
+          this.mensajeError = 'Error al iniciar sesión. Intente nuevamente';
         }
         
         this.cargando = false;

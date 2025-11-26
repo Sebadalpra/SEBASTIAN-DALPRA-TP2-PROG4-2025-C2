@@ -29,29 +29,9 @@ export class UsuariosService {
   }
 
 
-/* 
-  alta(id: number) {
-    return this.usuarioModel
-      .findByIdAndUpdate(id,
-        { activo: true },
-        { new: true },
-      ).exec();
-  }
-
-  baja(id: number) {
-    return this.usuarioModel
-      .findByIdAndUpdate(id,
-        { activo: false },
-        { new: true },
-      ).exec();
-  }
- */
-  async altaBaja(id: string, rol:string) {
-    if (rol != 'admin') {
-      throw new Error('Solo los administradores pueden activar o desactivar usuarios');
-    }
-    
+  async altaBaja(id: string) {
     const usuario = await this.usuarioModel.findById(id);
+
     if (usuario?.activo) {
       return this.usuarioModel.findByIdAndUpdate(id,
         { activo: false },
