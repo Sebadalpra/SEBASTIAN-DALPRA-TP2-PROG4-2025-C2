@@ -171,6 +171,29 @@ export class Publicacion {
 
 
 
+  fotoPerfilUrl: string = '';
+
+  getFotoDePerfil(username: string) {
+    this.api.getDataConCookie(`usuarios/${username}`).subscribe({
+      next: (usuario: any) => {
+        if (usuario.fotoPerfil) {
+          this.fotoPerfilUrl = this.buildRutaImagen(usuario.fotoPerfil);
+        } 
+      },
+      error: (err) => {
+        console.error('Error al cargar foto de perfil:', err);
+      }
+    });
+  }
+
+  ngOnInit() {
+    if (this.publicacion?.username) {
+      this.getFotoDePerfil(this.publicacion.username);
+      console.log("ngOnInit foto perfil " + this.fotoPerfilUrl);
+    }
+  }
+
+
   // ------- Guardar comentario editado
   guardarEdicion(comentarioId: string) {
     if (!this.textoEditado.trim()) return;
@@ -216,4 +239,5 @@ export class Publicacion {
   hayMasComentarios(): boolean {
     return !this.mostrarTodos && this.publicacion.comentarios?.length > this.limite;
   }
+
 }

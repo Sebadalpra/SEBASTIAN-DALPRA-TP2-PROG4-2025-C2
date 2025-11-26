@@ -16,8 +16,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/publicaciones/publicaciones').then(m => m.Publicaciones)
     },
     {
-        path: 'dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+        path: 'dashboard/usuarios',
+        loadComponent: () => import('./pages/dashboard/usuarios/dashboard').then(m => m.Dashboard),
+        canActivate: [rolGuard]
+    },
+    {
+        path: 'dashboard/estadisticas',
+        loadComponent: () => import('./pages/dashboard/estadisticas/estadisticas').then(m => m.Estadisticas),
         canActivate: [rolGuard]
     },
     { path: 'login',
