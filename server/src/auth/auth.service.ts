@@ -16,16 +16,17 @@ export class AuthService {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(usuario.password, saltRounds);
         
-        // Crear usuario con la contraseña hasheada y rol 'user' por defecto
+        // usuario con la contraseña hasheada y rol del DTO
         const usuarioConPasswordHash = {
             ...usuario,
             password: hashedPassword,
-            rol: 'user' // siempre 'user' al registrarse
+            rol: usuario.rol || 'user'
         };
 
         const nuevoUsuario = await this.usuariosService.create(usuarioConPasswordHash);
+        console.log('Usuario creado:', nuevoUsuario);
 
-        return this.createToken(nuevoUsuario.username, nuevoUsuario.rol);
+        return { message: 'Usuario registrado exitosamente', usuario: nuevoUsuario.username, rol: nuevoUsuario.rol };
     }
 
     createToken(username: string, rol: string) {
@@ -36,7 +37,7 @@ export class AuthService {
         };
 
         // token con la firma, clave secreta y tiempo del token valido
-        const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '2m' });
+        const token = sign(payload, process.env.JWT_SECRET!, { expiresIn: '4m' });
 
         return { token : token, rol: rol };
     }
@@ -52,12 +53,12 @@ export class AuthService {
     }
 
     verificarCookie(token: string) {
-
         try {
             const tokenValidado = verify(token, process.env.JWT_SECRET!);
             return tokenValidado;
-
         }
+
+        
         catch (error) {
             if (error instanceof TokenExpiredError) {
                 return "Token expirado";

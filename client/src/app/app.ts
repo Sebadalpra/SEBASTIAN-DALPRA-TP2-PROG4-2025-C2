@@ -21,11 +21,9 @@ export class App {
     this.api.getDataConCookie('auth/data/cookie').subscribe({
       next: (datos: any) => {
         this.rolUsuario.set(datos.rol || '');
-        console.log("rol app.ts: ", this.rolUsuario());
       },
       error: (err: any) => {
         this.rolUsuario.set('');
-        console.error('Error al verificar usuario:', err);
       }
     });
   }

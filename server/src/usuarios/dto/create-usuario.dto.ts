@@ -28,4 +28,8 @@ export class CreateUsuarioDto {
     @IsOptional()
     @IsString()
     fotoPerfil?: string;
+
+    @IsOptional()
+    @IsString()
+    rol?: string;
 }

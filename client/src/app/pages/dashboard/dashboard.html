@@ -15,7 +15,12 @@
                     </div>
                     <p class="mt-3 text-muted">Cargando usuarios...</p>
                 </div>
-            } @else {
+            } 
+            
+            <button class="btn btn-primary" (click)="mostrarDashboardAdmin()">Mostrar Dashboard</button>
+            <button class="btn btn-secondary" (click)="mostrarComponenteRegistro()">Registrar nuevo usuario</button>
+            
+            @if (mostrarDashboard) {
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
@@ -68,12 +73,26 @@
                                             </td>
                                         </tr>
                                     }
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
             }
         </div>
     </div>
 </div>
+@if (!mostrarDashboard) {
+    <app-registro [rolSeleccionado]="rolSeleccionado" [esDesdeAdmin]="true"></app-registro>
+    <p>Rol:</p>
+    <!-- radio button -->
+
+    <input [(ngModel)]="rolSeleccionado" type="radio" name="rol" value="user" id="user" checked>
+    <label for="user">Usuario</label>
+
+    <input [(ngModel)]="rolSeleccionado" type="radio" name="rol" value="admin" id="admin">
+    <label for="admin">Administrador</label>
+
+}

@@ -1,12 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Api } from '../../services/api';
-import { Router } from '@angular/router';
+import { Router, } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Registro } from "../registro/registro";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, Registro, FormsModule ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -64,4 +66,18 @@ export class Dashboard {
       }
     });
   }
+
+  
+  mostrarDashboard = true;
+
+  mostrarDashboardAdmin() {
+    this.mostrarDashboard = true;
+  }
+
+  mostrarComponenteRegistro() {
+    this.mostrarDashboard = false;
+  }
+
+  rolSeleccionado = '';
+
 }

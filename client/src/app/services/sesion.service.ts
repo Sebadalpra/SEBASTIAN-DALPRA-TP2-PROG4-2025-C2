@@ -10,17 +10,20 @@ export class SesionService {
   private api = inject(Api);
   private router = inject(Router);
   
-  // private tiempoSesion = 2 * 60 * 1000; // 2 minutos de sesion
-  private tiempoAdvertencia = 1 * 60 * 1000; // avisar cuando quede 1 minuto
+  private tiempoSesion = 4 * 60 * 1000; // 4 minutos de sesion
+  private tiempoAdvertencia = 2 * 60 * 1000; // avisar cuando quede 2 minutos
 
   private temporizador: any = null;
+
   private modalMostrado = false;
+  private inicioSesion: number = 0;
 
   iniciarContador() {
     this.detenerContador();
     this.modalMostrado = false;
-    
-    // advertir cuando quede 1 min
+    this.inicioSesion = Date.now();
+
+    // advertir cuando queden 2 min
     this.temporizador = setTimeout(() => {
       this.mostrarModalAviso();
     }, this.tiempoAdvertencia);
@@ -39,7 +42,7 @@ export class SesionService {
     
     Swal.fire({
       title: 'Sesión por expirar',
-      text: 'Te queda 1 minuto de sesión. Querés extender la sesión?',
+      text: 'Te quedan 2 minutos de sesión. Querés extender la sesión?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Extender',
@@ -59,7 +62,7 @@ export class SesionService {
       next: () => {
         Swal.fire({
           title: 'Sesión extendida',
-          text: 'Tu sesión se ha renovada por 2 minutos más.',
+          text: 'Tu sesión se ha renovada por 4 minutos más.',
           icon: 'success',
           timer: 2000,
           showConfirmButton: false
@@ -72,11 +75,15 @@ export class SesionService {
     });
   }
 
-  // esperar el minuto restante cuando el usuario cancela
+  // esperar el tiempo restante real cuando el usuario cancela
   private esperarExpiracion() {
+
+    const tiempoTranscurrido = Date.now() - this.inicioSesion; // tiempo actual - el momento en que el usuario inició sesión
+    const tiempoRestante = this.tiempoSesion - tiempoTranscurrido; // 4 min - tiempo transcurrido
+    
     this.temporizador = setTimeout(() => {
       this.cerrarSesion();
-    }, 1 * 60 * 1000); // 1 min mas
+    }, tiempoRestante > 0 ? tiempoRestante : 0); // 
   }
 
   private cerrarSesion() {

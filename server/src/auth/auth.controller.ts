@@ -6,7 +6,7 @@ import { CreateUsuarioDto } from 'src/usuarios/dto/create-usuario.dto';
 import { CredencialesDto } from './dto/credenciales.dto';
 import type { response, Response, Request } from 'express';
 import { JwtCookieGuard } from 'src/guards/jwt-cookie/jwt-cookie.guard';
-import { decode } from 'jsonwebtoken';
+import { decode, verify } from 'jsonwebtoken';
 
 @Controller('auth')
 export class AuthController {
@@ -23,8 +23,28 @@ export class AuthController {
     @Body('password') password: string,
     @Body('fecha_nacimiento') fecha_nacimiento: string,
     @Body('descripcion') descripcion: string,
-    @UploadedFile() file: Express.Multer.File
+    @Body('rol') rol: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request
   ) {
+
+    let rolFinal = rol || 'user';
+    // si el user intenta pasar rol admin validar:
+    if (rol === 'admin') {
+      const token = req.cookies?.['token'];
+      
+      if (!token) {
+        rolFinal = 'user';// si no hay token forzar rol user
+      } else {
+        try {
+          const decoded: any = verify(token, process.env.JWT_SECRET!);
+          rolFinal = decoded.rol === 'admin' ? 'admin' : 'user'; // si el rol del token es admin, dejar admin, sino forzar user
+        } catch (error) {
+          rolFinal = 'user';
+        }
+      }
+    }
+    
     const usuarioConFoto = {
       nombre,
       apellido,
@@ -33,7 +53,8 @@ export class AuthController {
       password,
       fecha_nacimiento,
       descripcion,
-      fotoPerfil: file ? file.filename : ''
+      fotoPerfil: file ? file.filename : '',
+      rol: rolFinal
     };
     return this.authService.registro(usuarioConFoto);
   }
@@ -45,20 +66,13 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none', // cambiar a 'none' para producción
       secure: true, // cambiar a true para producción
-      expires: new Date(Date.now() + 2 * 60 * 1000)
+      expires: new Date(Date.now() + 4 * 60 * 1000)
     }); 
     response.json({ message: "Logueo exitoso con cookie", rol: tokenData.rol, usuario: credencialesDto.username });
 
   }
 
-  // traer los datos del token guardado en la cookie
-  @Get('data/cookie')
-  @UseGuards(JwtCookieGuard)
-  traerCookie(@Req() request: Request) {
-    const token = request.cookies["token"] as string;
-    return this.authService.verificarCookie(token);
-  }
-
+  // ya con el usuario logueado, refrescar el token en la cookie
   @Post('refresh/cookie')
   @UseGuards(JwtCookieGuard)
   async refreshCookie(@Req() request: Request, @Res() response: Response) {
@@ -69,9 +83,19 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none', // cambiar a 'none' para producción
       secure: true, // cambiar a true para producción
-      expires: new Date(Date.now() + 2 * 60 * 1000)
+      expires: new Date(Date.now() + 4 * 60 * 1000)
     });
     
     response.json({ message: 'Token refrescado', rol: tokenData.rol });
   }
+
+  // traer los datos del token guardado en la cookie
+  @Get('data/cookie')
+  @UseGuards(JwtCookieGuard)
+  traerCookie(@Req() request: Request) {
+    const token = request.cookies["token"] as string;
+    return this.authService.verificarCookie(token);
+  }
+
+
 }

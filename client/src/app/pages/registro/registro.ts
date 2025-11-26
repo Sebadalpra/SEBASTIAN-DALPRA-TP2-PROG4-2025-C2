@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, input } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators, FormsModule } from '@angular/forms';
 import { min } from 'rxjs';
@@ -13,6 +13,8 @@ import { SesionService } from '../../services/sesion.service';
   styleUrl: './registro.css'
 })
 export class Registro {
+  @Input() rolSeleccionado: string = 'user';
+  @Input() esDesdeAdmin: boolean = false;
 
   grupoRegistro = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÀ-ÿ\\s]+$')]),
@@ -91,6 +93,8 @@ export class Registro {
   // hacer logica para validar si es mayor de edad
   private apiService = inject(Api)
 
+  private sesionService = inject(SesionService);
+
 
   // -----------------------------
 
@@ -151,9 +155,14 @@ export class Registro {
       formData.append('fotoPerfil', this.file);
     }
 
-    const sesionService = inject(SesionService)
+    // si desde el admin se selecciona un rol, se agrega al formData
+    if (this.rolSeleccionado) {
+      formData.append('rol', this.rolSeleccionado);
+    }
 
-    this.apiService.postData('auth/registro', formData).subscribe({
+
+
+    this.apiService.postCookie('auth/registro', formData).subscribe({
       next: () => {
         console.log('Registro exitoso');
         Swal.fire({
@@ -162,7 +171,14 @@ export class Registro {
           text: 'Registrado correctamente.',
         });
         
-        // loguearse automaticamente tras registro
+        // si es desde admin, NO loguear automáticamente
+        if (this.esDesdeAdmin) {
+          // solo resetear el formulario
+          this.grupoRegistro.reset();
+          return;
+        }
+        
+        // sino loguear automaticamente tras registro
         this.apiService.postCookie('auth/login/cookie', {
           username: this.userName?.value || '',
           password: this.password?.value || ''
@@ -170,7 +186,7 @@ export class Registro {
           next: (response: any) => {
             console.log('login exitoso tras registro:', response);
             this.router.navigate(['/publicaciones']);
-            sesionService.iniciarContador();
+            this.sesionService.iniciarContador();
           },
           error: (error) => {
             console.error('Error en login tras registro:', error);
