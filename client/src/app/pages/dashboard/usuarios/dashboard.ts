@@ -67,6 +67,27 @@ export class Dashboard {
     });
   }
 
+  alternarAltaBaja(usuario: any) {
+    this.api.altaBajaUsuario(usuario._id).subscribe( {
+      next: (data : any) => {
+        usuario.activo = data.activo;
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: `El usuario ${usuario.username} ha sido ${usuario.activo ? 'activado' : 'desactivado'}.`,
+        });
+      },
+      error: (error) => {
+        console.error('Error al cambiar estado del usuario:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo cambiar el estado del usuario. Intentá nuevamente.',
+        });
+      }
+    })
+  }
+
   
   mostrarDashboard = true;
 
@@ -79,5 +100,5 @@ export class Dashboard {
   }
 
   rolSeleccionado = '';
-
+  
 }

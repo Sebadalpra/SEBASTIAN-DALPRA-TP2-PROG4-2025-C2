@@ -25,17 +25,15 @@ export class UsuariosController {
   }
 
   @Get(':username')
+  @UseGuards(JwtCookieGuard)
   findOne(@Param('username') username: string) {
     return this.usuariosService.findOne(username);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuariosService.remove(+id);
+  @Patch(':id/alta-baja')
+  @UseGuards(JwtCookieGuard)
+  activar(@Param('id') id: string , @Req() req: any) {
+    const rol = (req as any).user.rol;
+    return this.usuariosService.altaBaja(id, rol);
   }
 }

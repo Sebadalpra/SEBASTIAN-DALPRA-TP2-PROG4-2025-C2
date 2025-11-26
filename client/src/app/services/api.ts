@@ -71,8 +71,35 @@ export class Api {
     return this.http.patch(`${this.baseUrl}/publicaciones/${publicacionId}/baja`, {}, { withCredentials: true });
   }
 
-}
+  // --- ESTADÍSTICAS ---
+  
+  getPublicacionesPorUsuario(fechaInicio: string, fechaFin: string) {
+    return this.http.get(`${this.baseUrl}/estadisticas/publicaciones-por-usuario`, {
+      params: { fechaInicio, fechaFin },
+      withCredentials: true
+    });
+  }
 
+  getComentariosTotales(fechaInicio: string, fechaFin: string) {
+    return this.http.get(`${this.baseUrl}/estadisticas/comentarios-totales`, {
+      params: { fechaInicio, fechaFin },
+      withCredentials: true
+    });
+  }
+
+  getComentariosPorPublicacion(fechaInicio: string, fechaFin: string) {
+    return this.http.get(`${this.baseUrl}/estadisticas/comentarios-por-publicacion`, {
+      params: { fechaInicio, fechaFin },
+      withCredentials: true
+    });
+  }
+
+  // ------- Alta y baja de usuarios (admin) ---
+  altaBajaUsuario(id: string) {
+    return this.http.patch(`${this.baseUrl}/usuarios/${id}/alta-baja`, {}, { withCredentials: true });
+  }
+
+}
 
 
 

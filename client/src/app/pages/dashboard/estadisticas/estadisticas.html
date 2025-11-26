@@ -1,5 +1,53 @@
-<p>estadísticas works!</p>
-<div>
-  <canvas #myChart></canvas>
+<div class="container py-4">
+  <h2>Estadísticas</h2>
+
+  <!-- Filtro de fechas -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label for="fechaInicio">Fecha inicio</label>
+          <input type="date" id="fechaInicio" class="form-control" [(ngModel)]="fechaInicio">
+        </div>
+        <div class="col-md-4">
+          <label for="fechaFin">Fecha fin</label>
+          <input type="date" id="fechaFin" class="form-control" [(ngModel)]="fechaFin">
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary w-100" (click)="cargarEstadisticas()" [disabled]="cargando" style="margin-top: 25px;">
+            {{ cargando ? 'Cargando...' : 'Actualizar' }}
+          </button>
+        </div>
+      </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Publicaciones por Usuario</div>
+        <div class="card-body">
+          <canvas #chartPublicaciones></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Comentarios por Día</div>
+        <div class="card-body">
+          <canvas #chartComentarios></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Publicaciones Más Comentadas</div>
+        <div class="card-body">
+          <canvas #chartComentariosPorPublicacion></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
  

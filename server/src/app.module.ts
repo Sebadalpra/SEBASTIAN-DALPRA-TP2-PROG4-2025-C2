@@ -6,13 +6,13 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [PublicacionesModule, AuthModule, UsuariosModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_URI!),
-
-    
+    EstadisticasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

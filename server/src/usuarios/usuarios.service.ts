@@ -7,9 +7,8 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class UsuariosService {
-
   /* Inyección del modelo de Mongoose para la entidad Usuario */
-  constructor(@InjectModel('Usuario') private usuarioModel : Model<Usuario> ){}
+  constructor(@InjectModel('Usuario') private usuarioModel: Model<Usuario>) {}
 
   create(dtoUsuario: CreateUsuarioDto) {
     const usuario = new this.usuarioModel(dtoUsuario);
@@ -29,11 +28,40 @@ export class UsuariosService {
     return this.usuarioModel.findOne({ username }).exec();
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
+
+/* 
+  alta(id: number) {
+    return this.usuarioModel
+      .findByIdAndUpdate(id,
+        { activo: true },
+        { new: true },
+      ).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  baja(id: number) {
+    return this.usuarioModel
+      .findByIdAndUpdate(id,
+        { activo: false },
+        { new: true },
+      ).exec();
+  }
+ */
+  async altaBaja(id: string, rol:string) {
+    if (rol != 'admin') {
+      throw new Error('Solo los administradores pueden activar o desactivar usuarios');
+    }
+    
+    const usuario = await this.usuarioModel.findById(id);
+    if (usuario?.activo) {
+      return this.usuarioModel.findByIdAndUpdate(id,
+        { activo: false },
+        { new: true },
+      ).exec();
+    } else {
+      return this.usuarioModel.findByIdAndUpdate(id,
+        { activo: true },
+        { new: true },
+      ).exec();
+    }
   }
 }

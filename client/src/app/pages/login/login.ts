@@ -58,6 +58,8 @@ export class Login {
         
         if (error.status === 401) {
           this.mensajeError = 'Usuario o contraseña incorrectos';
+        } else if (error.status === 400) {
+          this.mensajeError = 'Usuario inactivo. No puede iniciar sesión.';
         } else {
           this.mensajeError = 'Error al iniciar sesión. Intentá nuevamente';
         }

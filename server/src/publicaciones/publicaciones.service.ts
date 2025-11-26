@@ -9,7 +9,7 @@ import { CreateComentarioDto } from './dto/create-comentario.dto';
 @Injectable()
 export class PublicacionesService {
 
-  // model me trae los metodos para interactuar con la coleccion de publicaciones
+  // model me trae los metodos para interactuar con la coleccion de publicaciones (es la entity)
   constructor(@InjectModel('Publicaciones') private publicacionesModel : Model<Publicaciones> ){}
 
   create(nuevaPubli: CreatePublicacionesDto) {
@@ -93,15 +93,15 @@ export class PublicacionesService {
     );
   }
 
-  // Editar comentario (solo el dueño puede editarlo)
+  // editar comentario (solo el dueño puede editarlo)
   async editarComentario(publicacionId: string, comentarioId: string, nuevoTexto: string, username: string) {
-    // 1. Buscar la publicación
+    // 1. buscar la publicación
     const publicacion = await this.publicacionesModel.findById(publicacionId);
     if (!publicacion) {
       throw new NotFoundException('Publicación no encontrada');
     }
 
-    // 2. Buscar el comentario específico por su ID
+    // 2. buscar el comentario específico por su ID
     const comentario = publicacion.comentarios.find(
       (c: any) => c._id.toString() === comentarioId
     );
@@ -109,12 +109,12 @@ export class PublicacionesService {
       throw new NotFoundException('Comentario no encontrado');
     }
 
-    // 3. Verificar que el usuario sea el dueño del comentario
+    // 3. verificar que el usuario sea el dueño del comentario
     if (username !== comentario.username) {
       throw new ForbiddenException('No tenés permisos para editar este comentario');
     }
 
-    // 4. Actualizar el comentario usando el operador posicional $
+    // 4. actualizar el comentario en mongo
     return this.publicacionesModel.findOneAndUpdate(
       { _id: publicacionId, 'comentarios._id': comentarioId },
       { 
@@ -126,4 +126,5 @@ export class PublicacionesService {
       { new: true }
     );
   }
+
 }
