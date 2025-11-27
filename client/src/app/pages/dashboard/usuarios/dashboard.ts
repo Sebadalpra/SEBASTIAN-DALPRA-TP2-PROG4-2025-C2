@@ -5,10 +5,11 @@ import { Router, } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Registro } from "../../registro/registro";
 import { FormsModule } from '@angular/forms';
+import { MostrarDadoDeBajaDirective } from "../../../directives/mostrar-dado-de-baja.directive";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, Registro, FormsModule ],
+  imports: [CommonModule, Registro, FormsModule, MostrarDadoDeBajaDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

@@ -44,7 +44,7 @@
                                 </thead>
                                 <tbody>
                                     @for (usuario of usuarios; track usuario._id) {
-                                        <tr>
+                                        <tr [mostrarDadoDeBaja]="!usuario.activo">
                                             <td>
                                                 <strong>{{ usuario.username }}</strong>
                                             </td>

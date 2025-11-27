@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 import { FechaLargaPipe } from '../../pipes/fecha-larga.pipe';
 import { InicialesPipe } from '../../pipes/avatar-iniciales.pipe';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { ResaltarAdminDirective } from '../../directives/resaltar-admin.directive';
 
 @Component({
   selector: 'app-publicacion',
