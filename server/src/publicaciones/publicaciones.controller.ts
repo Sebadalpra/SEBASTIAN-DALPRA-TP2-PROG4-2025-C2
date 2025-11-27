@@ -66,7 +66,6 @@ export class PublicacionesController {
   // likes o quitar likes:
 
   @Post(':id/like')
-  // usar directamente yun guard en vez de verificar la cookie manualmente
   @UseGuards(JwtCookieGuard) 
 
   async like(@Param('id') id: string, @Req() req: any) {
@@ -74,7 +73,7 @@ export class PublicacionesController {
     return this.publicacionesService.addLike(id, username);
   }
 
-  @Post(':id/unlike')
+  @Delete(':id/like')
   @UseGuards(JwtCookieGuard)
 
   async unlike(@Param('id') id: string, @Req() req: any) {

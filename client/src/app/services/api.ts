@@ -52,7 +52,7 @@ export class Api {
   }
 
   unlikePublicacion(id: string) {
-    return this.http.post(`${this.baseUrl}/publicaciones/${id}/unlike`, {}, { withCredentials: true });
+    return this.http.delete(`${this.baseUrl}/publicaciones/${id}/like`, { withCredentials: true });
   }
 
   comentarPublicacion(id: string, texto: string) {
