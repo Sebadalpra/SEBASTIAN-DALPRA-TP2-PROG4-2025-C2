@@ -32,7 +32,7 @@ export class UsuariosController {
 
   @Patch(':id/alta-baja')
   @UseGuards(JwtCookieGuard) 
-  activar(@Param('id') id: string , @Req() req: any) {
+  altaBaja(@Param('id') id: string , @Req() req: any) {
     return this.usuariosService.altaBaja(id);
   }
 }

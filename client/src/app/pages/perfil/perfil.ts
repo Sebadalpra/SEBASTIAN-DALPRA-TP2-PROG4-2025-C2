@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Api } from '../../services/api';
 import { Publicacion } from '../../components/publicacion/publicacion';
 import { Registro } from '../registro/registro';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
+import { FechaLargaPipe } from '../../pipes/fecha-larga.pipe';
 
 @Component({
   selector: 'app-perfil',
-  imports: [CommonModule, Publicacion],
+  imports: [CommonModule, Publicacion, CapitalizePipe, FechaLargaPipe],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css',
 })
@@ -28,11 +30,11 @@ export class Perfil implements OnInit {
     
     this.api.getDataConCookie('auth/data/cookie').subscribe({
       next: (datos: any) => {
-        const username = datos.user; // 1. obtener el username solamente
+        const username = datos.user; // 1. obtener el username del usuario logueado
         console.log("user: ", username);
         
-        // 2. obtener todos los datos del usuario
-        this.api.getData(`usuarios/${username}`).subscribe({
+        // ----- 2. obtener todos los datos del usuario
+        this.api.getDataConCookie(`usuarios/${username}`).subscribe({
           next: (usuario: any) => {
             this.usuario = usuario;
             this.cargarPublicaciones(username);
@@ -70,13 +72,6 @@ export class Perfil implements OnInit {
     return this.api.buildRutaImagen(filename);
   }
 
-  formatearFecha(fecha: string): string {
-    return new Date(fecha).toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
 
   
 }

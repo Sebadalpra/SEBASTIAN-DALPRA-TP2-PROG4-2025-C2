@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
 import Swal from 'sweetalert2';
+import { FechaLargaPipe } from '../../pipes/fecha-larga.pipe';
+import { InicialesPipe } from '../../pipes/avatar-iniciales.pipe';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
+import { ResaltarAdminDirective } from '../../directives/resaltar-admin.directive';
 
 @Component({
   selector: 'app-publicacion',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FechaLargaPipe, InicialesPipe, CapitalizePipe],
   templateUrl: './publicacion.html',
   styleUrl: './publicacion.css',
 })
@@ -83,7 +87,7 @@ export class Publicacion {
 
   // verificar si el usuario es admin
   esAdmin(): boolean {
-    return this.rolUsuario === 'admin'; // esto 
+    return this.rolUsuario === 'admin';
   }
 
   // comentarios : 
@@ -173,6 +177,7 @@ export class Publicacion {
 
   fotoPerfilUrl: string = '';
 
+  // protegida con guard jwt-cookie si no estas logueado no puede ver la foto
   getFotoDePerfil(username: string) {
     this.api.getDataConCookie(`usuarios/${username}`).subscribe({
       next: (usuario: any) => {
