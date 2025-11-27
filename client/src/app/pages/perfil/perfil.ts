@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Api } from '../../services/api';
 import { Publicacion } from '../../components/publicacion/publicacion';
 import { Registro } from '../registro/registro';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FechaLargaPipe } from '../../pipes/fecha-larga.pipe';
+import { InicialesPipe } from '../../pipes/avatar-iniciales.pipe';
 
 @Component({
   selector: 'app-perfil',
-  imports: [CommonModule, Publicacion, CapitalizePipe, FechaLargaPipe],
+  imports: [CommonModule, Publicacion, CapitalizePipe, FechaLargaPipe, InicialesPipe],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css',
 })
@@ -37,6 +38,7 @@ export class Perfil implements OnInit {
         this.api.getDataConCookie(`usuarios/${username}`).subscribe({
           next: (usuario: any) => {
             this.usuario = usuario;
+            console.log("usuario: ", this.usuario);
             this.cargarPublicaciones(username);
           },
           error: (err) => {

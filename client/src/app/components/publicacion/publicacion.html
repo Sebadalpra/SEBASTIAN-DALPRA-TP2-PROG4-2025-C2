@@ -39,6 +39,7 @@
 		</div>
 		<h5 class="card-title fw-bold">{{ publicacion.titulo }}</h5>
 		<p class="card-text">{{ publicacion.mensaje }}</p>
+		<!-- imagen del body -->
 			@if (publicacion.imagen) {
 				<div class="text-center mb-3">
 					<img [src]="buildRutaImagen(publicacion.imagen)" class="img-fluid rounded shadow-sm border border-2" style="max-height: 500px; object-fit: cover;" alt="Imagen de la publicación" />

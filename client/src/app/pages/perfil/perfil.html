@@ -23,7 +23,7 @@
 					<div class="col-md-3 text-center">
 						<div class="foto-perfil-container mb-3">
                             
-                            @if (this.usuario) {
+                            @if (this.usuario?.fotoPerfil) {
                                 <img [src]="buildRutaImagen(this.usuario.fotoPerfil)" 
                                     class="img-fluid rounded-circle border border-3 border-primary shadow" 
                                     alt="Foto de perfil"
@@ -33,7 +33,7 @@
                                 <div 
                                     class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-3 border-primary shadow mx-auto" 
                                     style="width: 150px; height: 150px; font-size: 4rem;">
-                                    <i class="bi bi-person-fill"></i>
+                                    <span>{{ usuario.username | capitalizePipe | inicialesPipe:'' }}</span>
                                 </div>
                             }
 						</div>
